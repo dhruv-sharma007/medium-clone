@@ -1,0 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Hand+Pre:wght@400..700&display=swap");
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: wireframe --prefersdark;
+}
+
+.quote {
+  font-family: "Edu NSW ACT Hand Pre";
+  font-optical-sizing: auto;
+  font-style: normal;
+}
