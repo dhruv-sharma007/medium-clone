@@ -4,20 +4,26 @@ import { useBlogs } from "../hooks";
 import { RotateLoading } from "../components/Loading";
 
 const Blogs = () => {
-  const { blogs, loading } = useBlogs()
-  if (loading) return <div className="flex justify-center items-center min-h-screen"><RotateLoading /></div>;
+  const { blogs, loading } = useBlogs();
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <RotateLoading />
+      </div>
+    );
 
   return (
     <div>
       <div className=" fixed w-full z-10">
         <AppBar />
       </div>
-      <div className="h-full grid grid-cols-1">
+      <div className="h-full grid grid-cols-1 pt-15">
         {blogs?.map((blog) => (
           <BlogCard
             authorName={blog.author.name}
             content={blog.content}
             title={blog.title}
+            id={blog.id}
             key={blog.id}
           />
         ))}

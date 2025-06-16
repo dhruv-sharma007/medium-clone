@@ -53,9 +53,10 @@ user.post("/signin", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    console.log('body',body)
+    console.log('body', body)
     const user = await prisma.user.findUnique({
       where: { username: body.username, password: body.password },
+      select: { id: true, name: true, username: true }
     });
 
     if (!user) {
@@ -71,7 +72,7 @@ user.post("/signin", async (c) => {
       secure: true,
       maxAge: 60 * 60 * 24,
     });
-    return c.json({ message: "User logged in successfully" });
+    return c.json({ message: "User logged in successfully", data: user });
   } catch (error) {
     const err = error as Error;
     c.status(500);

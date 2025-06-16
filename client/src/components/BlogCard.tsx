@@ -5,6 +5,7 @@ interface IBlogcard {
   authorName: string;
   title: string;
   content: string;
+  id: number;
   // publishedDate: string;
 }
 
