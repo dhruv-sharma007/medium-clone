@@ -14,7 +14,7 @@ const CreatePost = () => {
     if ([title || content].some((field) => field?.trim() === "")) {
       return toast.error("Both field are required");
     }
-    
+
     try {
       postBlog({
         content: String(content),

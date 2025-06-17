@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { createBlog, getBlog, getBlogs, getMeProfile } from "../lib/api";
+import {
+  createBlog,
+  deleteBlog,
+  getBlog,
+  getBlogs,
+  getMeProfile,
+} from "../lib/api";
 import type { apiResponse, CreateBlogInput } from "@medium-clone/common";
 import type { IUserProfile } from "../vite-env";
 
@@ -91,19 +97,44 @@ export const useGetProfile = () => {
 
   useEffect(() => {
     try {
-      setLoading(true)
+      setLoading(true);
       getMeProfile().then((res) => {
-        setResponse(res.data)
-      })
-      setLoading(false)
+        setResponse(res.data);
+      });
+      setLoading(false);
     } catch (error) {
-      setError(error as Error)
-    } 
-  }, [])
+      setError(error as Error);
+    }
+  }, []);
 
   return {
     loading,
     error,
     response,
-  }
-}
+  };
+};
+
+export const useDeleteBlog = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+  const [response, setResponse] = useState<apiResponse>();
+
+  const deleteBlogHook = async (id: number) => {
+    try {
+      setLoading(true);
+      const res = await deleteBlog(id);
+      setResponse(res.data);
+    } catch (error) {
+      setError(error as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    loading,
+    error,
+    response,
+    deleteBlogHook,
+  };
+};

@@ -32,6 +32,10 @@ export const createBlog = async (data: CreateBlogInput) => {
   return await api.post<apiResponse>(`/blog/post`, data);
 };
 
-export const getMeProfile = async()=>{
-  return await api.get<IUserProfile>(`/user/protected/me`)
-}
+export const getMeProfile = async () => {
+  return await api.get<IUserProfile>(`/user/protected/me`);
+};
+
+export const deleteBlog = async (id: number) => {
+  return await api.get<apiResponse>(`/blog/delete/${id}`);
+};

@@ -1,9 +1,10 @@
 import { Context, Hono } from "hono";
 import { getCookie } from "hono/cookie";
-import { PrismaClient } from "@prisma/client/edge";
+import { PrismaClient, Prisma } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { verify } from "hono/jwt";
 import { createBlogInput, updateBlogInput } from "@medium-clone/common";
+import { getPrisma } from "../lib/db";
 
 type Variables = {
   user: { id: number; name: string; username: string };
@@ -161,4 +162,50 @@ blogRouter.get("/bulk", async (c) => {
   }
 });
 
+blogRouter.get("/delete/:id", async (c) => {
+  const id = c.req.param("id");
+
+  if (!id || id.trim() === "") {
+    c.status(400);
+    return c.json({
+      message: "Please provide a valid id.",
+      data: {},
+      success: false,
+    });
+  }
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+
+    const deletedBlog = await prisma.blog.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return c.json({
+      message: "Blog deleted successfully",
+      data: deletedBlog,
+      success: true,
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        
+        c.status(404);
+        return c.json({
+          message: error.message,
+          data: {},
+          success: false,
+        });
+      }
+    }
+    const err = error as Error
+    console.log(err)
+    c.status(500);
+    return c.json({
+      message: err.message,
+      data: {},
+      success: false,
+    });
+  }
+});
 export default blogRouter;

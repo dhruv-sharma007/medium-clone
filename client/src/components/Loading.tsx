@@ -15,5 +15,4 @@ export const RotateLoading = ({ size = 15 }) => {
   );
 };
 
-
 export default BarLoading;
