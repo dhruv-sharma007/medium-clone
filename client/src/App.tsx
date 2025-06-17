@@ -4,18 +4,15 @@ import SignIn from "./pages/SignIn";
 import Blog from "./pages/Blog";
 import { Toaster } from "react-hot-toast";
 import Blogs from "./pages/Blogs";
-import { useAuthStore } from './store/auth';
 import CreatePost from "./pages/CreatePost";
-import AppBar from './components/AppBar';
+import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 function App() {
-  const { isLoggedIn } = useAuthStore()
-
   return (
     <>
       <div>
-        <Toaster position="top-center" reverseOrder={false} />
-      {/* <AppBar /> */}
+        <Toaster position="bottom-right" reverseOrder={false} />
       </div>
       <BrowserRouter>
         <Routes>
@@ -25,8 +22,31 @@ function App() {
           <Route path="/" element={<Blogs />} />
 
           {/* private route  */}
-          <Route path="/create_post" element={isLoggedIn ? <CreatePost /> : <SignIn />} />
+          <Route
+            path="/create_post"
+            element={
+              <ProtectedRoute>
+                <CreatePost />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/create_post"
+            element={
+              <ProtectedRoute>
+                <CreatePost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

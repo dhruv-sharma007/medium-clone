@@ -26,4 +26,8 @@ export const updateBlogInput = z.object({
 })
 export type UpdateBlogInput = z.infer<typeof updateBlogInput>
 
-
+export type apiResponse = {
+    data: object;
+    message: string;
+    success: boolean;
+}

@@ -8,7 +8,7 @@ import BarLoading from "./Loading";
 import { useAuthStore } from "../store/auth";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
-  const { login } = useAuthStore()
+  const { login } = useAuthStore();
 
   const [postInput, setPostInput] = useState<SignupInput>({
     name: "",
@@ -28,20 +28,17 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         login({
           name: res.data.data.name,
           id: res.data.data.id,
-          username: res.data.data.username
-        })
+          username: res.data.data.username,
+        });
         toast.success(res.data.message);
-
       } else {
         const res = await signupApi(postInput);
         toast.success(res.data.message);
       }
-
     } catch (error) {
       const err = error as Error;
       toast.error(err.message);
       console.log(err);
-
     } finally {
       setLoading(false);
     }

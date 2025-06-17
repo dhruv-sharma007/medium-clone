@@ -3,7 +3,7 @@ import { type IBlog } from "../hooks";
 import { useParams } from "react-router-dom";
 import { RotateLoading } from "../components/Loading";
 import { getBlog } from "../lib/api";
-import AppBar from '../components/AppBar';
+import AppBar from "../components/AppBar";
 
 const Blog = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,13 +29,15 @@ const Blog = () => {
   return (
     <>
       <AppBar />
-      {loading ? <RotateLoading /> :
+      {loading ? (
+        <RotateLoading />
+      ) : (
         <div className="p-4 text-center">
           <h1 className="text-3xl font-bold mb-4">{blog?.title}</h1>
           <p className="text-gray-400 mb-2">By ~{blog?.author.name}</p>
           <p className="text-lg">{blog?.content}</p>
         </div>
-      }
+      )}
     </>
   );
 };

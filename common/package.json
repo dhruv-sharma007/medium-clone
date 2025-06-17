@@ -1,6 +1,6 @@
 {
   "name": "@medium-clone/common",
-  "version": "1.0.4",
+  "version": "1.0.51",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
