@@ -3,7 +3,7 @@ wrangler.jsonc
 wrangler.toml
 
 # prod
-dist/
+dist
 
 # dev
 .yarn/

@@ -55,6 +55,7 @@ const ProfileBlog = ({
 
   return (
     <>
+
       <div className="p-3">
         <span className="ring ring-black">
           <div className="bg-white shadow-xs cursor-pointer ring ring-gray-500 rounded-xs  p-5 max-w-md space-y-4 hover:shadow-lg transition-shadow duration-100">
@@ -69,7 +70,7 @@ const ProfileBlog = ({
               {/* avatar ends here */}
 
               {/* menu drop down starts here */}
-              <div className="dropdown dropdown-start">
+              <div className="dropdown dropdown-start z-20">
                 <div tabIndex={0} role="button" className="btn m-1">
                   <CiMenuKebab />
                 </div>
@@ -119,10 +120,9 @@ const ProfileBlog = ({
               </div>
               {/* menu drop down ends here */}
             </div>
+            <h2 className="text-xl font-bold text-gray-800">{title}</h2>
 
             <Link to={`/blog/${id}`}>
-              <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-
               <p className="text-gray-700 text-sm leading-relaxed">
                 {content.slice(0, 100)}...
               </p>

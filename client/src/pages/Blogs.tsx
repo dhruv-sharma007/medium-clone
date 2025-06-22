@@ -1,4 +1,4 @@
-import BlogCard from "../components/BlogCard";
+// import BlogCard from "../components/BlogCard";
 import AppBar from "../components/AppBar";
 import { useBlogs } from "../hooks";
 import { RotateLoading } from "../components/Loading";

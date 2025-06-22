@@ -64,7 +64,7 @@ user.post("/signup", async (c) => {
 
 user.get("/protected/signout", async (c) => {
   deleteCookie(c, "token");
-  return c.json({ message: "User logged out successfully!" });
+  return c.json({ message: "User logged out successfully!", data: {}, success: true });
 });
 
 user.post("/signin", async (c) => {

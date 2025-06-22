@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type IBlog } from "../hooks";
 import { useParams } from "react-router-dom";
 import { RotateLoading } from "../components/Loading";

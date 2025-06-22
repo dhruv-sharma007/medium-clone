@@ -5,7 +5,7 @@ import Blog from "./pages/Blog";
 import { Toaster } from "react-hot-toast";
 import Blogs from "./pages/Blogs";
 import CreatePost from "./pages/CreatePost";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute, { PublicRoute } from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
 
 function App() {
@@ -16,8 +16,15 @@ function App() {
       </div>
       <BrowserRouter>
         <Routes>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={
+            <PublicRoute>
+              <SignUp />
+            </PublicRoute>} />
+
+          <Route path="/signin" element={
+            <PublicRoute>
+              <SignIn />
+            </PublicRoute>} />
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/" element={<Blogs />} />
 

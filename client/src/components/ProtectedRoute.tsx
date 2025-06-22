@@ -7,4 +7,9 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   return isLoggedIn ? children : <Navigate to="/signin" replace />;
 };
 
+export const PublicRoute = ({ children }: { children: JSX.Element }) => {
+  const { isLoggedIn } = useAuthStore();
+  return isLoggedIn ? <Navigate to="/" replace /> : children;
+};
+
 export default ProtectedRoute;

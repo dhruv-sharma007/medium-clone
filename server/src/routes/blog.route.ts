@@ -137,6 +137,9 @@ blogRouter.get("/bulk", async (c) => {
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const blogs = await prisma.blog.findMany({
+      orderBy:{
+        id: 'desc'
+      },
       select: {
         id: true,
         title: true,
@@ -189,7 +192,7 @@ blogRouter.get("/delete/:id", async (c) => {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        
+
         c.status(404);
         return c.json({
           message: error.message,
@@ -208,4 +211,57 @@ blogRouter.get("/delete/:id", async (c) => {
     });
   }
 });
+
+blogRouter.put("/update/:id", async (c: Context) => {
+  const body = await c.req.json();
+  const res = updateBlogInput.safeParse(body);
+  const id = c.req.param("id")
+
+  if (!res.success) {
+    c.status(400)
+    return c.json({
+      message: "please provide correct fields",
+      data: {},
+      success: false,
+    })
+  }
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+
+    const data = await prisma.blog.update({
+      where: {
+        id: parseInt(id)
+      }, data: {
+        content: res.data.content,
+        title: res.data.title
+      }
+    })
+
+    return c.json({
+      message: "Blog updated successfully",
+      data,
+      success: true,
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        c.status(404);
+        return c.json({
+          message: error.message,
+          data: {},
+          success: false,
+        });
+      }
+    }
+    const err = error as Error
+    console.log(err)
+    c.status(500);
+    return c.json({
+      message: err.message,
+      data: {},
+      success: false,
+    });
+  }
+})
+
 export default blogRouter;

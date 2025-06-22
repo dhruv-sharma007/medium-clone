@@ -1,5 +1,5 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/auth";
 
 const Avatar = ({
   name,
@@ -10,6 +10,7 @@ const Avatar = ({
   size?: number;
   font_Size?: number;
 }) => {
+
   return (
     <Link to={"/profile"}>
       <div

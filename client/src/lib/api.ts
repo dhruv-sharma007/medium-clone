@@ -19,6 +19,9 @@ export const signinApi = async (data: SigninInput) => {
 export const signupApi = async (data: SignupInput) => {
   return await api.post<apiResponse>("/user/signup", data);
 };
+export const signoutApi = async () => {
+  return await api.get<apiResponse>("/user/protected/signout");
+};
 
 export const getBlogs = async () => {
   return await api.get<apiResponse>("/blog/bulk");
