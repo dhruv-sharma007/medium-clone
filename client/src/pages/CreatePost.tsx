@@ -2,8 +2,8 @@ import { useState } from "react";
 import AppBar from "../components/AppBar";
 import { usePostBlog } from "../hooks";
 import toast from "react-hot-toast";
-import BarLoading from "../components/Loading";
-import PostBlog from '../components/PostBlog';
+// import BarLoading from "../components/Loading"; 
+import PostBlog from "../components/PostBlog";
 
 const CreatePost = () => {
   const { error, loading, postBlog, response } = usePostBlog();

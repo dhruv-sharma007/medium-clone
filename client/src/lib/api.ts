@@ -20,7 +20,7 @@ export const signupApi = async (data: SignupInput) => {
   return await api.post<apiResponse>("/user/signup", data);
 };
 export const signoutApi = async () => {
-  return await api.get<apiResponse>("/user/protected/signout");
+  return await api.get<apiResponse>("/user/signout");
 };
 
 export const getBlogs = async () => {
@@ -36,7 +36,7 @@ export const createBlog = async (data: CreateBlogInput) => {
 };
 
 export const getMeProfile = async () => {
-  return await api.get<IUserProfile>(`/user/protected/me`);
+  return await api.get<IUserProfile>(`/user/me`);
 };
 
 export const deleteBlog = async (id: number) => {
