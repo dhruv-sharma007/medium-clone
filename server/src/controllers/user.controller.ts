@@ -67,7 +67,7 @@ const userSignin = async (c: Context) => {
             secure: true,
             maxAge: 60 * 60 * 24,
         });
-        return c.json(apiJson("User logged in successfully", {}, false));
+        return c.json(apiJson("User logged in successfully", user, false));
     } catch (error) {
         const err = error as Error;
         c.status(500);
@@ -104,7 +104,7 @@ const getProfile = async (c: Context) => {
             }
         })
         c.status(200)
-        return c.json(apiJson('User found successfully', {}, false))
+        return c.json(apiJson('User found successfully', data, true))
     } catch (error) {
         
         console.log(error)

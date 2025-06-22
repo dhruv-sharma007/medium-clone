@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 const Profile = () => {
   const { user, logout } = useAuthStore();
 
-  const { loading, response } = useGetProfile();
+  const { loading, response, error } = useGetProfile();
   const navigate = useNavigate()
 
   const onLogout = async () => {
@@ -25,6 +25,9 @@ const Profile = () => {
     }
   }
 
+  if(error){
+    console.log(error)
+  }
 
   return (
     <>
