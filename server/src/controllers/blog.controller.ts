@@ -18,7 +18,8 @@ const postBlog = async (c: Context) => {
             data: {
                 content: body.content,
                 title: body.title,
-                authorId: c.get("user").id,
+                slug: body.title.split(' ').join('-'),
+                userId: c.get("user").id,
             },
         });
         c.status(201);
@@ -30,56 +31,56 @@ const postBlog = async (c: Context) => {
     }
 }
 
-const updateBlog =  async (c: Context) => {
-  const body = await c.req.json();
-  const res = updateBlogInput.safeParse(body);
-  const id = c.req.param("id")
+const updateBlog = async (c: Context) => {
+    const body = await c.req.json();
+    const res = updateBlogInput.safeParse(body);
+    const id = c.req.param("id")
 
-  if (!res.success) {
-    c.status(400)
-    return c.json({
-      message: "please provide correct fields",
-      data: {},
-      success: false,
-    })
-  }
-  try {
-    const prisma = getPrisma(c.env.DATABASE_URL);
-
-    const data = await prisma.blog.update({
-      where: {
-        id: parseInt(id)
-      }, data: {
-        content: res.data.content,
-        title: res.data.title
-      }
-    })
-
-    return c.json({
-      message: "Blog updated successfully",
-      data,
-      success: true,
-    });
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2025") {
-        c.status(404);
+    if (!res.success) {
+        c.status(400)
         return c.json({
-          message: error.message,
-          data: {},
-          success: false,
-        });
-      }
+            message: "please provide correct fields",
+            data: {},
+            success: false,
+        })
     }
-    const err = error as Error
-    console.log(err)
-    c.status(500);
-    return c.json({
-      message: err.message,
-      data: {},
-      success: false,
-    });
-  }
+    try {
+        const prisma = getPrisma(c.env.DATABASE_URL);
+
+        const data = await prisma.blog.update({
+            where: {
+                id: id
+            }, data: {
+                content: res.data.content,
+                title: res.data.title
+            }
+        })
+
+        return c.json({
+            message: "Blog updated successfully",
+            data,
+            success: true,
+        });
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2025") {
+                c.status(404);
+                return c.json({
+                    message: error.message,
+                    data: {},
+                    success: false,
+                });
+            }
+        }
+        const err = error as Error
+        console.log(err)
+        c.status(500);
+        return c.json({
+            message: err.message,
+            data: {},
+            success: false,
+        });
+    }
 }
 
 const getBlog = async (c: Context) => {
@@ -89,10 +90,10 @@ const getBlog = async (c: Context) => {
 
         const blog = await prisma.blog.findUnique({
             where: {
-                id: parseInt(id),
+                id: id,
             },
             select: {
-                author: {
+                user: {
                     select: {
                         id: true,
                         name: true,
@@ -126,7 +127,7 @@ const getBulkBlogs = async (c: Context) => {
                 id: true,
                 title: true,
                 content: true,
-                author: {
+                user: {
                     select: {
                         id: true,
                         name: true,
@@ -159,8 +160,8 @@ const deleteBlog = async (c: Context) => {
     try {
         const prisma = getPrisma(c.env.DATABASE_URL);
 
-         await prisma.blog.delete({
-            where: { id: parseInt(id) },
+        await prisma.blog.delete({
+            where: { id: id },
         });
 
         return c.json(apiJson('Blogs deleted successfully', {}, false));

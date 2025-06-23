@@ -22,7 +22,7 @@ const userSignUp = async (c: Context) => {
                 body.username
         }
     });
-    
+
     if (existingUser?.username === body.username) {
         return c.json(apiJson('User already exists', {}, false), 400)
     }
@@ -95,9 +95,9 @@ const getProfile = async (c: Context) => {
                 Blogs: {
                     select: {
                         id: true,
-                        author: true,
+                        user: true,
                         content: true,
-                        published: true,
+                        isPublished: true,
                         title: true
                     }
                 }
@@ -106,7 +106,7 @@ const getProfile = async (c: Context) => {
         c.status(200)
         return c.json(apiJson('User found successfully', data, true))
     } catch (error) {
-        
+
         console.log(error)
         const err = error as Error;
         c.status(500);
@@ -114,9 +114,20 @@ const getProfile = async (c: Context) => {
     }
 }
 
+const deleteProfile = async (c: Context) => {
+    const user = c.get('user')
+    const prisma = getPrisma(c.env.DATABASE_URL)
+
+    await prisma.user.delete({ where: { id: user.id } })
+
+    c.status(200)
+    return c.json(apiJson('User deleted successfully', {}, true))
+}
+
 export {
     userSignUp,
     userSignin,
     userSignOut,
     getProfile,
+    deleteProfile
 }

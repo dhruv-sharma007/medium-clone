@@ -1,4 +1,4 @@
-import { getProfile, userSignin, userSignOut, userSignUp } from "../controllers/user.controller";
+import { deleteProfile, getProfile, userSignin, userSignOut, userSignUp } from "../controllers/user.controller";
 import { userAuth } from "../middlewares/userAuth.mid";
 import { Hono } from "hono";
 
@@ -18,5 +18,6 @@ user.post("/signup", userSignUp);
 user.post("/signin", userSignin);
 user.get("/signout", userAuth, userSignOut);
 user.get('/me', userAuth, getProfile)
+user.delete('/me', userAuth, deleteProfile)
 
 export default user;
