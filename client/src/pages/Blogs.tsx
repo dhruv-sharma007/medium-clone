@@ -21,12 +21,12 @@ const Blogs = () => {
           <div className="h-full grid grid-cols-1 pt-15 ">
             {blogs?.map((blog) => (
               <ProfileBlog
-                authorName={blog.author.name}
+                authorName={blog.user.name}
                 content={blog.content}
                 title={blog.title}
                 id={blog.id}
                 key={blog.id}
-                authorId={blog.author.id}
+                authorId={blog.user.id}
                 page="home"
               />
             ))}

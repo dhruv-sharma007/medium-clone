@@ -67,7 +67,7 @@ const Profile = () => {
                   title={blog.title}
                   key={blog.id}
                   page="profile"
-                  authorId={blog.author.id}
+                  authorId={blog.user.id}
                 />
               );
             })}
