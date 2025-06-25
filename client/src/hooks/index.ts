@@ -19,7 +19,7 @@ export interface IBlog {
   id: number;
   title: string;
   content: string;
-  author: Author;
+  user: Author;
 }
 
 export const useBlogs = () => {

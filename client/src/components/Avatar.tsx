@@ -1,31 +1,41 @@
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../store/auth";
+// import { useAuthStore } from "../store/auth";
 
 const Avatar = ({
-  name,
+  imgUrl,
   size = 40,
   font_Size = 14,
+  name = "U", 
 }: {
-  name: string;
+  imgUrl?: string;
   size?: number;
   font_Size?: number;
+  name?: string;
 }) => {
-
   return (
-    <Link to={"/profile"}>
+    <Link to="/profile">
       <div
         style={{ width: size, height: size }}
-        className="relative inline-flex items-center justify-center overflow-hidden bg-gray-600 rounded-full"
+        className="relative inline-flex items-center justify-center overflow-hidden bg-gray-700 rounded-full"
       >
-        <span
-          style={{ fontSize: font_Size }}
-          className="font-extralight text-gray-600 dark:text-gray-300"
-        >
-          {name[0].toUpperCase()}
-        </span>
+        {imgUrl ? (
+          <img
+            src={imgUrl}
+            alt="avatar"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span
+            style={{ fontSize: font_Size }}
+            className="text-white font-semibold"
+          >
+            {name.charAt(0).toUpperCase()}
+          </span>
+        )}
       </div>
     </Link>
   );
 };
 
 export default Avatar;
+

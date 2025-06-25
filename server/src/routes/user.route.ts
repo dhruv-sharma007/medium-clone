@@ -16,7 +16,7 @@ const user = new Hono<{
 
 user.post("/signup", userSignUp);
 user.post("/signin", userSignin);
-user.get("/signout", userAuth, userSignOut);
+user.get("/signout", userSignOut);
 user.get('/me', userAuth, getProfile)
 user.delete('/me', userAuth, deleteProfile)
 
