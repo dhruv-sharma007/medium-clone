@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
+  checkUsername,
   createBlog,
   deleteBlog,
   getBlog,
@@ -9,7 +10,184 @@ import {
 import type { apiResponse, CreateBlogInput } from "@medium-clone/common";
 import type { IUserProfile } from "../vite-env";
 
-interface Author {
+// --------- useBlogs ---------
+export const useBlogs = () => {
+  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState<IBlog[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getBlogs()
+      .then(res => {
+        if (!cancelled) setBlogs(res.data.data);
+      })
+      .catch(err => {
+        if (!cancelled) setError(err as Error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true };
+  }, []);
+
+  return { loading, blogs, error };
+};
+
+// --------- useBlog ---------
+export const useBlog = (id: string) => {
+  const [loading, setLoading] = useState(false);
+  const [blog, setBlog] = useState<IBlog | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getBlog(id)
+      .then(res => {
+        if (!cancelled) setBlog(res.data.data);
+      })
+      .catch(err => {
+        if (!cancelled) setError(err as Error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true };
+  }, [id]);
+
+  return { loading, blog, error };
+};
+
+// --------- usePostBlog ---------
+export const usePostBlog = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [response, setResponse] = useState<apiResponse | null>(null);
+
+  const postBlog = async (data: CreateBlogInput) => {
+    setLoading(true);
+    setError(null);
+    setResponse(null);
+    try {
+      const res = await createBlog(data);
+      setResponse(res.data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loading, error, response, postBlog };
+};
+
+// --------- useDeleteBlog ---------
+export const useDeleteBlog = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [response, setResponse] = useState<apiResponse | null>(null);
+
+  const deleteBlogHook = async (id: string) => {
+    setLoading(true);
+    setError(null);
+    setResponse(null);
+    try {
+      const res = await deleteBlog(id);
+      setResponse(res.data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loading, error, response, deleteBlogHook };
+};
+
+// --------- useGetProfile ---------
+export const useGetProfile = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [profile, setProfile] = useState<IUserProfile | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getMeProfile()
+      .then(res => {
+        if (!cancelled) setProfile(res.data);
+      })
+      .catch(err => {
+        if (!cancelled) setError(err as Error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true };
+  }, []);
+
+  return { loading, error, profile };
+};
+
+// --------- useCheckUsername ---------
+export const useCheckUsername = (minLength = 3, debounceMs = 300) => {
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<boolean | null>(null);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState<Error | null>(null);
+
+  const debounceRef = useRef<number | undefined>(undefined);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    setSuccess(null);
+    setMessage("");
+    setError(null);
+
+    window.clearTimeout(debounceRef.current);
+    abortRef.current?.abort();
+
+    if (username.trim().length < minLength) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    debounceRef.current = window.setTimeout(() => {
+      const ac = new AbortController();
+      abortRef.current = ac;
+
+      checkUsername(username, { signal: ac.signal })
+        .then(res => {
+          setSuccess(res.data.success);
+          setMessage(res.data.message);
+        })
+        .catch(e => {
+          if (e.name !== "AbortError") {
+            setSuccess(false);
+            setError(e);
+            setMessage(e.message);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, debounceMs);
+
+    return () => {
+      window.clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
+    };
+  }, [username, minLength, debounceMs]);
+
+  return { username, setUsername, loading, success, message, error };
+};
+
+// --------- Types ---------
+export interface Author {
   id: number;
   name: string;
   username: string;
@@ -21,121 +199,3 @@ export interface IBlog {
   content: string;
   user: Author;
 }
-
-export const useBlogs = () => {
-  const [loading, setLoading] = useState(true);
-  const [blogs, setBlogs] = useState<IBlog[]>();
-
-  useEffect(() => {
-    getBlogs()
-      .then((res) => {
-        console.log(res.data);
-        setBlogs(res.data.data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-  return {
-    loading,
-    blogs,
-  };
-};
-
-export const useBlog = (id: number) => {
-  const [loading, setLoading] = useState(false);
-  const [blog, setBlog] = useState<IBlog>();
-
-  useEffect(() => {
-    getBlog(id)
-      .then((res) => {
-        console.log(res.data);
-        setBlog(res.data.data);
-        setLoading(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [id]);
-
-  return {
-    blog,
-    loading,
-  };
-};
-
-export const usePostBlog = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>();
-  const [response, setResponse] = useState<apiResponse>();
-
-  const postBlog = async (data: CreateBlogInput) => {
-    setLoading(true);
-    setError(undefined);
-    try {
-      const res = await createBlog(data);
-      setResponse(res.data);
-    } catch (e) {
-      setError(e as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    loading,
-    error,
-    postBlog,
-    response,
-  };
-};
-
-export const useGetProfile = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [response, setResponse] = useState<IUserProfile>();
-
-  useEffect(() => {
-    try {
-      setLoading(true);
-      getMeProfile().then((res) => {
-        setResponse(res.data);
-      });
-      setLoading(false);
-    } catch (error) {
-      setError(error as Error);
-    }
-  }, []);
-
-  return {
-    loading,
-    error,
-    response,
-  };
-};
-
-export const useDeleteBlog = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
-  const [response, setResponse] = useState<apiResponse>();
-
-  const deleteBlogHook = async (id: number) => {
-    try {
-      setLoading(true);
-      const res = await deleteBlog(id);
-      setResponse(res.data);
-    } catch (error) {
-      setError(error as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    loading,
-    error,
-    response,
-    deleteBlogHook,
-  };
-};
-

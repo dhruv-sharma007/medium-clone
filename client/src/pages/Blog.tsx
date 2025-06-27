@@ -12,10 +12,11 @@ const Blog = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    getBlog(parseInt(id))
+    getBlog(id)
       .then((res) => {
         setBlog(res.data.data);
-        console.log(res.data);
+      }).catch((e) => { 
+        console.error(e)
       })
       .finally(() => {
         setLoading(false);

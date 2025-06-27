@@ -1,21 +1,32 @@
 import type { SignupInput } from "@medium-clone/common";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import Input from "./Input";
 import { signinApi, signupApi } from "../lib/api";
 import toast from "react-hot-toast";
 import BarLoading from "./Loading";
 import { useAuthStore } from "../store/auth";
+import { useCheckUsername } from "../hooks";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const { login } = useAuthStore();
 
+  const [loading, setLoading] = useState(false);
+  const [isFormField, setIsFormField] = useState<boolean>(false)
   const [postInput, setPostInput] = useState<SignupInput>({
     name: "",
     password: "",
     username: "",
   });
-  const [loading, setLoading] = useState(false);
+
+  const { message, success: usernameSuccess, setUsername } = useCheckUsername()
+
+  useEffect(() => {
+    const { password, username, name } = postInput
+    setIsFormField(
+      [password, username, name].every(v => v?.trim() !== "")
+    )
+  }, [postInput])
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -64,14 +75,28 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 }}
               />
             )}
-            <Input
-              type="text"
-              label="Username"
-              placeholder="Enter your username"
-              onChange={(e) => {
-                setPostInput((c) => ({ ...c, username: e.target.value }));
-              }}
-            />
+            {type === 'signup'
+              ?
+              <Input
+                type="text"
+                label="Username"
+                placeholder="Enter your username"
+                onChange={(e) => {
+                  setPostInput((c) => ({ ...c, username: e.target.value }));
+                  setUsername(e.target.value)
+                }}
+              />
+              :
+              <Input
+                type="text"
+                label="Username"
+                placeholder="Enter your username"
+                onChange={(e) => {
+                  setPostInput((c) => ({ ...c, username: e.target.value }));
+                }}
+              />
+            }
+            <p className="text-red-500">{message}</p>
             <Input
               label="Password"
               placeholder="Enter Your Password"
@@ -82,11 +107,13 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             />
 
             <button
+              disabled={type === "signup" && !(isFormField === usernameSuccess)}
               className="btn btn-neutral min-w-full mt-3 bg-[rgba(17,20,50,0.89)] text-white"
               type="submit"
             >
               Submit
             </button>
+
           </form>
           {type === "signup" ? (
             <div className="text-slate-400">

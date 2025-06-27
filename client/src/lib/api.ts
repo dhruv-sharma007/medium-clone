@@ -4,7 +4,7 @@ import type {
   SignupInput,
   apiResponse,
 } from "@medium-clone/common";
-import axios from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import type { IUserProfile } from "../vite-env";
 import { useAuthStore } from "../store/auth";
 
@@ -42,7 +42,7 @@ export const getBlogs = async () => {
   return await api.get<apiResponse>("/blog/bulk");
 };
 
-export const getBlog = async (id: number) => {
+export const getBlog = async (id: string) => {
   return await api.get<apiResponse>(`/blog/get/${id}`);
 };
 
@@ -54,6 +54,9 @@ export const getMeProfile = async () => {
   return await api.get<IUserProfile>(`/user/me`);
 };
 
-export const deleteBlog = async (id: number) => {
+export const deleteBlog = async (id: string) => {
   return await api.get<apiResponse>(`/blog/delete/${id}`);
+};
+export const checkUsername = async (username: string, options: AxiosRequestConfig) => {
+  return await api.get<apiResponse>(`/user/username-check/${username}`, options);
 };
