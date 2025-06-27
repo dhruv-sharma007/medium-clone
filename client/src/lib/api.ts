@@ -6,11 +6,26 @@ import type {
 } from "@medium-clone/common";
 import axios from "axios";
 import type { IUserProfile } from "../vite-env";
+import { useAuthStore } from "../store/auth";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}/api/v1`,
   withCredentials: true,
 });
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 403) {
+      // Call the logout function from the auth store
+      useAuthStore.getState().logout();
+
+      // Optional: redirect to signin
+      window.location.href = "/signin"; // change path as needed
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const signinApi = async (data: SigninInput) => {
   return await api.post<apiResponse>("/user/signin", data);

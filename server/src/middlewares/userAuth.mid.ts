@@ -2,23 +2,28 @@ import { Context, Next } from "hono";
 import { getCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 
-export const userAuth =  async (c: Context, next: Next) => {
+export const userAuth = async (c: Context, next: Next) => {
   const token = getCookie(c, "token");
-  
-  const isVerified: any = await verify(
-    String(token),
-    String(c.env.JWT_SECRET),
-    "HS256",
-  );
 
-  if (typeof isVerified === "object" && isVerified !== null) {
-    c.set("user", {
-      id: isVerified.id,
-      name: isVerified.name,
-      username: isVerified.username,
-    });
-  } else {
-    return c.json({ message: "Unauthorized" }, 401);
+  if (!token) {
+    return c.json({ message: "Unauthorized - No token" }, 403);
   }
-  return await next();
-}
+
+  try {
+    const payload = await verify(token, c.env.JWT_SECRET, "HS256") as {
+      id: number;
+      name: string;
+      username: string;
+    };
+
+    c.set("user", {
+      id: payload.id,
+      name: payload.name,
+      username: payload.username,
+    });
+
+    return await next();
+  } catch (err) {
+    return c.json({ message: "Unauthorized - Invalid token" }, 403);
+  }
+};

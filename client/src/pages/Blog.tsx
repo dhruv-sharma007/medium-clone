@@ -3,7 +3,6 @@ import { type IBlog } from "../hooks";
 import { useParams } from "react-router-dom";
 import { RotateLoading } from "../components/Loading";
 import { getBlog } from "../lib/api";
-import AppBar from "../components/AppBar";
 
 const Blog = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,7 +12,7 @@ const Blog = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    getBlog(id)
+    getBlog(parseInt(id))
       .then((res) => {
         setBlog(res.data.data);
         console.log(res.data);
@@ -28,7 +27,6 @@ const Blog = () => {
 
   return (
     <>
-      <AppBar />
       {loading ? (
         <RotateLoading />
       ) : (

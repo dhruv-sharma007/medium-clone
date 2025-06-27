@@ -1,5 +1,4 @@
 // import BlogCard from "../components/BlogCard";
-import AppBar from "../components/AppBar";
 import { useBlogs } from "../hooks";
 import { RotateLoading } from "../components/Loading";
 import ProfileBlog from "../components/Profile/ProfileBlog";
@@ -9,9 +8,7 @@ const Blogs = () => {
 
   return (
     <div>
-      <div className=" fixed w-full z-50">
-        <AppBar />
-      </div>
+      
       {loading ? (
         <div className="flex justify-center items-center min-h-screen">
           <RotateLoading />

@@ -2,7 +2,8 @@ import Avatar from '../Avatar';
 import ProfileStat from './ProfileStat';
 import toast from 'react-hot-toast';
 import { signoutApi } from '../../lib/api';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { ProfilePicUrl } from '../../lib/static';
 
 const ProfileSection = () => {
 
@@ -26,7 +27,7 @@ const ProfileSection = () => {
                 <section className="flex flex-col md:flex-row md:justify-between items-center gap-6 py-6 border-b">
                     <div className="flex items-center gap-4 w-full md:w-auto">
                         <Avatar
-                            imgUrl="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
+                            imgUrl={ProfilePicUrl}
                             size={80}
                             font_Size={35}
                         />
@@ -42,7 +43,7 @@ const ProfileSection = () => {
                     <div className="flex flex-col md:items-end w-full md:w-auto gap-4">
                         <ProfileStat followers={100} following={9} posts={28} />
                         <div className="flex gap-3">
-                            <button className="btn btn-outline btn-sm rounded-lg">Edit Profile</button>
+                            <Link to={'/profile-edit'} className="btn btn-outline btn-sm rounded-lg">Edit Profile</Link>
                             <button className="btn btn-outline btn-error btn-sm rounded-lg" onClick={onLogout}>
                                 Logout
                             </button>

@@ -14,3 +14,10 @@ interface IUserProfile {
   message: string;
   success: boolean;
 }
+
+interface IProfileUpdate {
+  name?: string;
+  username?: string;
+  bio?: string;
+  profilePic?: string;
+}

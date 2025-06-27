@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AppBar from "../components/AppBar";
 import { usePostBlog } from "../hooks";
 import toast from "react-hot-toast";
 // import BarLoading from "../components/Loading"; 
@@ -35,10 +34,6 @@ const CreatePost = () => {
 
   return (
     <>
-      <div className="fixed w-full z-20">
-        <AppBar />
-      </div>
-
       <PostBlog
         error={error}
         loading={loading}

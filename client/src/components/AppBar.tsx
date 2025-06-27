@@ -1,3 +1,4 @@
+import { ProfilePicUrl } from "../lib/static";
 import { useAuthStore } from "../store/auth";
 import Avatar from "./Avatar";
 import { Link } from "react-router-dom";
@@ -17,7 +18,7 @@ const AppBar = () => {
           <Link to="/create_post">
             <button className="btn btn-primary">Create Post</button>
           </Link>
-          <Avatar imgUrl="https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg" size={32} />
+          <Avatar imgUrl={ProfilePicUrl} size={32} />
         </div>
       ) : (
         <Link to="/signin" className="mt-3 sm:mt-0">

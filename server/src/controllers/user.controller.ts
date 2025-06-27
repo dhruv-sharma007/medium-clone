@@ -123,6 +123,9 @@ const deleteProfile = async (c: Context) => {
     c.status(200)
     return c.json(apiJson('User deleted successfully', {}, true))
 }
+const updateProfile = async(c: Context)=>{
+    
+}
 
 export {
     userSignUp,
