@@ -81,6 +81,7 @@ const getBlog = async (c: Context) => {
                 id: true,
                 title: true,
                 content: true,
+                createdAt: true,
                 user: {
                     select: {
                         id: true,
@@ -113,6 +114,7 @@ const getBulkBlogs = async (c: Context) => {
                 id: true,
                 title: true,
                 content: true,
+                createdAt: true,
                 user: {
                     select: {
                         id: true,

@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import type { IGetProfileResponse } from "@medium-clone/common";
 import type { IBlog } from "./hooks";
 
 interface IUserData {
@@ -10,7 +11,7 @@ interface IUserData {
 }
 
 interface IUserProfile {
-  data: IUserData;
+  data: IGetProfileResponse;
   message: string;
   success: boolean;
 }

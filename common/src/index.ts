@@ -32,3 +32,28 @@ export type apiResponse = {
     success: boolean;
 }
 
+// Get profile 
+
+interface Blog {
+    id: string;
+    user: {
+        id: string;
+        username: string;
+    };
+    content: string;
+    isPublished: boolean;
+    title: string;
+    createdAt: Date;
+}
+
+export interface IGetProfileResponse {
+    id: string;
+    name: string;
+    username: string;
+    profilePic: string;
+    bio: string;
+    followers: number;
+    following: number;
+    Blogs: Blog[];
+    postCount: number;
+}

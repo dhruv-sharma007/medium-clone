@@ -9,7 +9,7 @@ const BarLoading = ({ height = 4, width = 400 }) => {
 };
 export const RotateLoading = ({ size = 15 }) => {
   return (
-    <div className="w-full h-screen flex justify-center items-center">
+    <div className="min-w-full min-h-screen flex justify-center items-center">
       <RotateLoader size={size} />
     </div>
   );

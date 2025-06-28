@@ -60,3 +60,6 @@ export const deleteBlog = async (id: string) => {
 export const checkUsername = async (username: string, options: AxiosRequestConfig) => {
   return await api.get<apiResponse>(`/user/username-check/${username}`, options);
 };
+export const editProfile = async () => {
+  return await api.get<apiResponse>(`/user/`);
+};

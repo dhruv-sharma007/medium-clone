@@ -4,6 +4,7 @@ import { getPrisma } from "../lib/db";
 import { Context } from "hono";
 import { sign } from "hono/jwt";
 import { deleteCookie, setCookie } from "hono/cookie";
+import { ProfilePicUrl } from '../../../client/src/lib/static';
 
 // User Sign Up
 const userSignUp = async (c: Context) => {
@@ -93,29 +94,47 @@ const userSignOut = async (c: Context) => {
 // Get Profile
 const getProfile = async (c: Context) => {
     try {
-        const user = c.get("user");
+        const use = c.get("user");
         const prisma = getPrisma();
 
         const data = await prisma.user.findUnique({
-            where: { id: user.id, username: user.username },
+            where: { id: use.id, username: use.username },
             select: {
                 id: true,
                 name: true,
                 username: true,
+                followers: true,
+                following: true,
+                profilePic: true,
+                bio: true,
+                _count: {
+                    select: {
+                        Blogs: true
+                    }
+                },
                 Blogs: {
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
                     select: {
                         id: true,
                         user: true,
                         content: true,
                         isPublished: true,
                         title: true,
+                        createdAt: true
                     },
                 },
             },
         });
 
+        const { _count, ...user } = data!;
+
         c.status(200);
-        return c.json(apiJson("User found successfully", data, true));
+        return c.json(apiJson("User found successfully", {
+            ...user,
+            postCount: _count.Blogs,
+        }, true));
     } catch (error) {
         const err = error as Error;
         c.status(500);
@@ -157,6 +176,10 @@ const isUsernameAvailable = async (c: Context) => {
 
     c.status(202)
     return c.json(apiJson('', {}, true))
+}
+
+const editProfile = () => {
+    
 }
 
 export {

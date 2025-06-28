@@ -13,13 +13,15 @@ const ProfileBlog = ({
   title,
   content,
   authorId,
-  page
+  page,
+  createdAt
 }: {
-  id: number;
+  id: string;
   authorName: string;
   title: string;
   content: string;
-  authorId: number;
+  authorId: string;
+  createdAt: Date
   page: 'profile' | 'home'
 }) => {
   const { user } = useAuthStore()
@@ -56,9 +58,9 @@ const ProfileBlog = ({
   return (
     <>
 
-      <div className="p-3">
+      <div className="p-3 ">
         <span className="ring ring-black">
-          <div className="bg-white shadow-xs cursor-pointer ring ring-gray-500 rounded-xs  p-5 max-w-md space-y-4 hover:shadow-lg transition-shadow duration-100">
+          <div className="bg-white shadow-xs  ring ring-gray-500 rounded-xs  p-5 max-w-md space-y-4 hover:shadow-lg transition-shadow duration-100">
             <div className=" flex justify-between items-center">
               {/* avatar with name starts here */}
               <div className="flex items-center gap-3">
@@ -120,7 +122,10 @@ const ProfileBlog = ({
               </div>
               {/* menu drop down ends here */}
             </div>
-            <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+            <div>
+              <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+              <p className="text-sm text-gray-400">{new Date(createdAt).toLocaleDateString()}</p>
+            </div>
 
             <Link to={`/blog/${id}`}>
               <p className="text-gray-700 text-sm leading-relaxed">

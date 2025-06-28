@@ -5,7 +5,7 @@ const Avatar = ({
   imgUrl,
   size = 40,
   font_Size = 14,
-  name = "U", 
+  name = "?", 
 }: {
   imgUrl?: string;
   size?: number;

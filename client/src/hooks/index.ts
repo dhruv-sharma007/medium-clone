@@ -7,13 +7,13 @@ import {
   getBlogs,
   getMeProfile,
 } from "../lib/api";
-import type { apiResponse, CreateBlogInput } from "@medium-clone/common";
+import type { apiResponse, CreateBlogInput, IGetProfileResponse } from "@medium-clone/common";
 import type { IUserProfile } from "../vite-env";
 
 // --------- useBlogs ---------
-export const useBlogs = () => {
+const useBlogs = () => {
   const [loading, setLoading] = useState(true);
-  const [blogs, setBlogs] = useState<IBlog[]>([]);
+  const [blogs, setBlogs] = useState<any>([]);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useBlogs = () => {
 };
 
 // --------- useBlog ---------
-export const useBlog = (id: string) => {
+const useBlog = (id: string) => {
   const [loading, setLoading] = useState(false);
   const [blog, setBlog] = useState<IBlog | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -61,7 +61,7 @@ export const useBlog = (id: string) => {
 };
 
 // --------- usePostBlog ---------
-export const usePostBlog = () => {
+const usePostBlog = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [response, setResponse] = useState<apiResponse | null>(null);
@@ -84,7 +84,7 @@ export const usePostBlog = () => {
 };
 
 // --------- useDeleteBlog ---------
-export const useDeleteBlog = () => {
+const useDeleteBlog = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [response, setResponse] = useState<apiResponse | null>(null);
@@ -107,17 +107,17 @@ export const useDeleteBlog = () => {
 };
 
 // --------- useGetProfile ---------
-export const useGetProfile = () => {
+const useGetProfile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [profile, setProfile] = useState<IUserProfile | null>(null);
+  const [profile, setProfile] = useState<IGetProfileResponse | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     getMeProfile()
       .then(res => {
-        if (!cancelled) setProfile(res.data);
+        if (!cancelled) setProfile(res.data.data);
       })
       .catch(err => {
         if (!cancelled) setError(err as Error);
@@ -132,7 +132,7 @@ export const useGetProfile = () => {
 };
 
 // --------- useCheckUsername ---------
-export const useCheckUsername = (minLength = 3, debounceMs = 300) => {
+const useCheckUsername = (minLength = 3, debounceMs = 300) => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<boolean | null>(null);
@@ -198,4 +198,13 @@ export interface IBlog {
   title: string;
   content: string;
   user: Author;
+}
+
+export {
+  useBlogs,
+  useBlog,
+  usePostBlog,
+  useDeleteBlog,
+  useGetProfile,
+  useCheckUsername,
 }

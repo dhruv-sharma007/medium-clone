@@ -24,6 +24,7 @@ const Blogs = () => {
                 id={blog.id}
                 key={blog.id}
                 authorId={blog.user.id}
+                createdAt={blog.createdAt}
                 page="home"
               />
             ))}
