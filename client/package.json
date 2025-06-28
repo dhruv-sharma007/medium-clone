@@ -14,6 +14,7 @@
     "@medium-clone/common": "^1.0.8",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
+    "browser-image-compression": "^2.0.2",
     "nanoid": "^5.1.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

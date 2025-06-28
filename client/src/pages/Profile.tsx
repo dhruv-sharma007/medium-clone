@@ -1,4 +1,3 @@
-
 import ProfileSection from '../components/Profile/ProfileSection';
 import { useGetProfile } from '../hooks';
 import { RotateLoading } from '../components/Loading';
@@ -6,7 +5,6 @@ import ProfileBlog from '../components/Profile/ProfileBlog';
 
 const Profile = () => {
   const { error, loading, profile } = useGetProfile()
-
 
   if (loading) return <RotateLoading />
 
@@ -35,7 +33,8 @@ const Profile = () => {
             key={blog.id}
             authorId={profile.id}
             createdAt={blog.createdAt}
-            page="home"
+            page="profile"
+            authorPic={blog.user.profilePic}
           />
         ))}
       </div>

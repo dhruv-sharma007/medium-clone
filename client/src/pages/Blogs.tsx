@@ -26,6 +26,7 @@ const Blogs = () => {
                 authorId={blog.user.id}
                 createdAt={blog.createdAt}
                 page="home"
+                authorPic={blog.user.profilePic}
               />
             ))}
           </div>

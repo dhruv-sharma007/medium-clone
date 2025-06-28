@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { IGetProfileResponse } from "@medium-clone/common";
+import type { apiResponse, IGetProfileResponse } from "@medium-clone/common";
 import type { IBlog } from "./hooks";
 
 interface IUserData {
@@ -21,4 +21,23 @@ interface IProfileUpdate {
   username?: string;
   bio?: string;
   profilePic?: string;
+}
+
+interface IPROFILE {
+  username: string;
+  id: string;
+  profilePic?: string;
+  name: string;
+}
+
+export interface IEditProfileResponse {
+  data: IPROFILE;
+  message: string;
+  success: boolean;
+}
+
+export interface ILOGINRESPONSE {
+  data: IPROFILE;
+  message: string;
+  success: boolean;
 }

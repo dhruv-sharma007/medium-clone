@@ -36,10 +36,13 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
       if (type === "signin") {
         const res = await signinApi(postInput);
+        console.log(postInput)
+
         login({
           name: res.data.data.name,
           id: res.data.data.id,
           username: res.data.data.username,
+          profilePic: res.data.data.profilePic
         });
         toast.success(res.data.message);
       } else {

@@ -5,7 +5,7 @@ import type {
   apiResponse,
 } from "@medium-clone/common";
 import axios, { type AxiosRequestConfig } from "axios";
-import type { IUserProfile } from "../vite-env";
+import type { IEditProfileResponse, ILOGINRESPONSE, IUserProfile } from "../vite-env";
 import { useAuthStore } from "../store/auth";
 
 export const api = axios.create({
@@ -28,7 +28,7 @@ api.interceptors.response.use(
 );
 
 export const signinApi = async (data: SigninInput) => {
-  return await api.post<apiResponse>("/user/signin", data);
+  return await api.post<ILOGINRESPONSE>("/user/signin", data);
 };
 
 export const signupApi = async (data: SignupInput) => {
@@ -60,6 +60,8 @@ export const deleteBlog = async (id: string) => {
 export const checkUsername = async (username: string, options: AxiosRequestConfig) => {
   return await api.get<apiResponse>(`/user/username-check/${username}`, options);
 };
-export const editProfile = async () => {
-  return await api.get<apiResponse>(`/user/`);
+export const editProfile = async (payload) => {
+  return await api.post<IEditProfileResponse>("/user/update-profile", payload, {
+    headers: { "Content-Type": "application/json" },
+  })
 };

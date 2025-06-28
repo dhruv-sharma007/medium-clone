@@ -19,7 +19,7 @@ model User {
   username   String    @unique
   password   String
   bio        String?
-  profilePic String? 
+  profilePic String?
   Blogs      Blog[]
   Like       Like[]
   Comment    Comment[]

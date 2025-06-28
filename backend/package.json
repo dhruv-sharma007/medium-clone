@@ -9,6 +9,7 @@
   "dependencies": {
     "@medium-clone/common": "^1.0.51",
     "@prisma/client": "6.10.1",
+    "argon2": "^0.43.0",
     "dotenv": "^16.6.0",
     "hono": "^4.8.3",
     "imagekit": "^6.0.0"

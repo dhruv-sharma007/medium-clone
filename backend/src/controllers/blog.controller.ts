@@ -104,6 +104,9 @@ const getBlog = async (c: Context) => {
 };
 
 // GET: Get all blogs
+
+// TODO: ADD pagination <-----------
+
 const getBulkBlogs = async (c: Context) => {
     try {
         const prisma = getPrisma();
@@ -120,6 +123,7 @@ const getBulkBlogs = async (c: Context) => {
                         id: true,
                         name: true,
                         username: true,
+                        profilePic: true
                     },
                 },
             },

@@ -6,6 +6,7 @@ import Avatar from "../Avatar";
 import { useDeleteBlog } from "../../hooks";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../../store/auth";
+import { ProfilePicUrl } from "../../lib/static";
 
 const ProfileBlog = ({
   id,
@@ -14,7 +15,8 @@ const ProfileBlog = ({
   content,
   authorId,
   page,
-  createdAt
+  createdAt,
+  authorPic
 }: {
   id: string;
   authorName: string;
@@ -23,6 +25,7 @@ const ProfileBlog = ({
   authorId: string;
   createdAt: Date
   page: 'profile' | 'home'
+  authorPic: string
 }) => {
   const { user } = useAuthStore()
   const navigate = useNavigate()
@@ -64,7 +67,7 @@ const ProfileBlog = ({
             <div className=" flex justify-between items-center">
               {/* avatar with name starts here */}
               <div className="flex items-center gap-3">
-                <Avatar name="authorname" />
+                <Avatar name="authorname" imgUrl={authorPic || ProfilePicUrl} />
                 <div className="text-sm text-gray-600">
                   <p className="font-semibold">{authorName}</p>
                 </div>

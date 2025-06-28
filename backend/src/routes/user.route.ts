@@ -1,4 +1,4 @@
-import { deleteProfile, getProfile, isUsernameAvailable, userSignin, userSignOut, userSignUp } from "../controllers/user.controller";
+import { deleteProfile, editProfile, getProfile, isUsernameAvailable, userSignin, userSignOut, userSignUp } from "../controllers/user.controller";
 import { userAuth } from "../middlewares/userAuth.mid";
 import { Hono } from "hono";
 
@@ -7,10 +7,6 @@ type Variables = {
 };
 
 const user = new Hono<{
-  Bindings: {
-    DATABASE_URL: string;
-    JWT_SECRET: string;
-  };
   Variables: Variables;
 }>();
 
@@ -20,5 +16,6 @@ user.get("/signout", userSignOut);
 user.get('/me', userAuth, getProfile)
 user.delete('/me', userAuth, deleteProfile)
 user.get('/username-check/:username', isUsernameAvailable)
+user.post('/update-profile', userAuth, editProfile)
 
 export default user;

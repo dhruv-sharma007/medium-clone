@@ -4,7 +4,7 @@ import Avatar from "./Avatar";
 import { Link } from "react-router-dom";
 
 const AppBar = () => {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, user } = useAuthStore();
 
   return (
     <div className="border-b flex flex-wrap justify-between items-center px-4 sm:px-8 py-3 bg-white shadow-sm">
@@ -18,7 +18,7 @@ const AppBar = () => {
           <Link to="/create_post">
             <button className="btn btn-primary">Create Post</button>
           </Link>
-          <Avatar imgUrl={ProfilePicUrl} size={32} />
+          <Avatar imgUrl={user?.profilePic || ProfilePicUrl} size={32} />
         </div>
       ) : (
         <Link to="/signin" className="mt-3 sm:mt-0">
