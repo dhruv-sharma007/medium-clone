@@ -1,4 +1,4 @@
-# MEDIUM CONE 
+# MEDIUM CLONE 
 
 ## WHY
 - ### I am learning serverless backend with hono and cloudflare workers so i build this app 
