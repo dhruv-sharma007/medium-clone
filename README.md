@@ -20,19 +20,19 @@ git clone https://github.com/dhruv-sharma007/medium-clone
 - install packages. use any node package manager bun/npm/pnpm/yarn
 
 ```bash
-cd ./server && bun i 
+cd ./backend && bun i 
 cd ../client && bun i
 ```
 
 - Then run both server and client
 
 ```bash
-cd ./client
+cd ./backend
 bun run dev
 ```
 
 ```bash
-cd ./server
+cd ./backend
 bun run dev
 ```
 
