@@ -8,7 +8,6 @@ import {
   getMeProfile,
 } from "../lib/api";
 import type { apiResponse, CreateBlogInput, IGetProfileResponse } from "@medium-clone/common";
-import type { IUserProfile } from "../vite-env";
 
 // --------- useBlogs ---------
 const useBlogs = () => {
@@ -132,7 +131,7 @@ const useGetProfile = () => {
 };
 
 // --------- useCheckUsername ---------
-const useCheckUsername = (minLength = 3, debounceMs = 300) => {
+const useCheckUsername = (minLength = 4, debounceMs = 400) => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<boolean | null>(null);
@@ -152,6 +151,20 @@ const useCheckUsername = (minLength = 3, debounceMs = 300) => {
 
     if (username.trim().length < minLength) {
       setLoading(false);
+      setSuccess(false)
+      setMessage(`username minimum length ${minLength} `)
+      return;
+    }
+    const hasInvalidChars = /[^a-zA-Z0-9_]/.test(username)
+
+    if (hasInvalidChars) {
+      setMessage('Username contains invalid characters')
+      setSuccess(false)
+      return;
+    }
+    if (username.toLowerCase() !== username) {
+      setMessage('username should contain lowercase')
+      setSuccess(false)
       return;
     }
 

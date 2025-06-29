@@ -1,26 +1,19 @@
 import { useRef, useState } from "react"
 import { ProfilePicUrl } from "../lib/static"
-import {  editProfile } from '../lib/api'
+import { editProfile } from '../lib/api'
 import type { IProfileUpdate } from "../vite-env"
 import { Link } from "react-router-dom"
 import imageCompression from 'browser-image-compression'
 import { useAuthStore } from "../store/auth"
+import { useCheckUsername } from "../hooks"
 
 const EditProfile = () => {
 
-    
-    // Ideally, this should come from a global store or fetched from an API
-    const initialUser: IProfileUpdate = {
-        name: "Dhruv Sharma",
-        username: "dhruv99",
-        bio: "Hi, I am Dhruv Sharma, software engineer from Rawatsar.",
-        profilePic: ProfilePicUrl
-    }
-
+    const { updateUser, user } = useAuthStore()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
-    const [profile, setProfile] = useState<IProfileUpdate>(initialUser)
+    const [profile, setProfile] = useState<IProfileUpdate | null>(user)
     const [imagePreview, setImagePreview] = useState(ProfilePicUrl)
-    const { updateUser } = useAuthStore()
+    const { message, success: usernameSuccess, setUsername } = useCheckUsername()
 
     const fileToBase64 = async (file: File): Promise<string> => {
         const compressedFile = await imageCompression(file, {
@@ -54,7 +47,7 @@ const EditProfile = () => {
 
         const payload = {
             ...profile,
-            profilePic: reader || profile.profilePic,
+            profilePic: reader || profile?.profilePic,
         }
 
         try {
@@ -106,7 +99,7 @@ const EditProfile = () => {
                             <input
                                 type="text"
                                 name="name"
-                                value={profile.name}
+                                value={profile?.name}
                                 onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -118,10 +111,14 @@ const EditProfile = () => {
                             <input
                                 type="text"
                                 name="username"
-                                value={profile.username}
-                                onChange={(e) => setProfile(prev => ({ ...prev, username: e.target.value }))}
+                                value={profile?.username}
+                                onChange={(e) => {
+                                    setProfile(prev => ({ ...prev, username: e.target.value }))
+                                    setUsername(e.target.value)
+                                }}
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
+                            {profile?.username !== user?.username ? <p className="text-red-500">{message}</p> : ''}
                         </div>
                     </div>
 
@@ -131,7 +128,7 @@ const EditProfile = () => {
                         </label>
                         <textarea
                             name="bio"
-                            value={profile.bio}
+                            value={profile?.bio}
                             rows={3}
                             onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
                             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -147,7 +144,8 @@ const EditProfile = () => {
                         </Link>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                            disabled={!usernameSuccess}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:text-gray-400"
                         >
                             Save Changes
                         </button>

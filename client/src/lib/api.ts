@@ -60,7 +60,7 @@ export const deleteBlog = async (id: string) => {
 export const checkUsername = async (username: string, options: AxiosRequestConfig) => {
   return await api.get<apiResponse>(`/user/username-check/${username}`, options);
 };
-export const editProfile = async (payload) => {
+export const editProfile = async (payload: any) => {
   return await api.post<IEditProfileResponse>("/user/update-profile", payload, {
     headers: { "Content-Type": "application/json" },
   })

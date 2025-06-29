@@ -4,7 +4,7 @@
 - ### I am learning serverless backend with hono and cloudflare workers so i build this app 
 
 ## TECH STACK I USED FOR IT 
-- **Typescript**, **hono**, **prisma**, **postgresql**, **react**, **cloudflare**, **neon.tech**
+- **Typescript**, **hono**, **prisma**, **postgresql**, **react**, **bun**, **neon.tech**
 
 
 

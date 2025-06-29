@@ -5,7 +5,8 @@ interface User {
   id: string;
   username: string;
   name: string;
-  profilePic: string;
+  profilePic?: string | undefined;
+  bio?: string | undefined;
 }
 
 interface AuthState {

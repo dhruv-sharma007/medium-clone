@@ -266,6 +266,7 @@ const editProfile = async (c: Context) => {
                 username: true,
                 profilePic: true,
                 name: true,
+                bio: true
             }
         });
         user
