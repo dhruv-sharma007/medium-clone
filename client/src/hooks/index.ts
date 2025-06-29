@@ -142,29 +142,32 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    setSuccess(null);
+    setSuccess(true);
     setMessage("");
     setError(null);
 
     window.clearTimeout(debounceRef.current);
     abortRef.current?.abort();
 
-    if (username.trim().length < minLength) {
-      setLoading(false);
-      setSuccess(false)
-      setMessage(`username minimum length ${minLength} `)
-      return;
-    }
-    const hasInvalidChars = /[^a-zA-Z0-9_]/.test(username)
+    const trimmed = username.trim();
 
-    if (hasInvalidChars) {
-      setMessage('Username contains invalid characters')
-      setSuccess(false)
+    if (trimmed.length < minLength) {
+      setLoading(false);
+      setSuccess(false);
+      setMessage(`Username must be at least ${minLength} characters`);
       return;
     }
-    if (username.toLowerCase() !== username) {
-      setMessage('username should contain lowercase')
-      setSuccess(false)
+
+    const hasInvalidChars = /[^a-z0-9_]/.test(trimmed); // also ensures lowercase
+    if (hasInvalidChars) {
+      setSuccess(false);
+      setMessage("Username must only contain lowercase letters, numbers, or underscores");
+      return;
+    }
+
+    if (trimmed !== username) {
+      setSuccess(false);
+      setMessage("Username cannot have leading or trailing spaces");
       return;
     }
 
@@ -173,7 +176,7 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
       const ac = new AbortController();
       abortRef.current = ac;
 
-      checkUsername(username, { signal: ac.signal })
+      checkUsername(trimmed, { signal: ac.signal })
         .then(res => {
           setSuccess(res.data.success);
           setMessage(res.data.message);
@@ -198,6 +201,7 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
 
   return { username, setUsername, loading, success, message, error };
 };
+
 
 // --------- Types ---------
 export interface Author {
