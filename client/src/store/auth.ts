@@ -5,8 +5,8 @@ interface User {
   id: string;
   username: string;
   name: string;
-  profilePic?: string | undefined;
-  bio?: string | undefined;
+  profilePic?: string;
+  bio?: string;
 }
 
 interface AuthState {
@@ -20,23 +20,20 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: null,
+      user: null, // should be null initially
       isLoggedIn: false,
-      updateUser: (user: User) => {
-        set({ user })
-      },
-      login: (user) => {
-        set({ isLoggedIn: true });
-        set({ user });
+      login: (user: User) => {
+        set({ isLoggedIn: true, user });
       },
       logout: () => {
-        set({ isLoggedIn: false })
-        set({ user: null })
+        set({ isLoggedIn: false, user: null });
       },
-
+      updateUser: (user: User) => {
+        set({ user });
+      },
     }),
     {
       name: "auth-storage",
-    },
-  ),
+    }
+  )
 );

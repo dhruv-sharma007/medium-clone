@@ -27,6 +27,7 @@ api.interceptors.response.use(
   }
 );
 
+//*********** Profile and user ***********//
 export const signinApi = async (data: SigninInput) => {
   return await api.post<ILOGINRESPONSE>("/user/signin", data);
 };
@@ -38,6 +39,20 @@ export const signoutApi = async () => {
   return await api.get<apiResponse>("/user/signout");
 };
 
+export const editProfile = async (payload: object) => {
+  return await api.post<IEditProfileResponse>("/user/update-profile", payload, {
+    headers: { "Content-Type": "application/json" },
+  })
+};
+export const getAuthor = async (id: string) => {
+  return await api.get<IUserProfile>(`/user/getAuthor/${id}`)
+};
+
+export const getMeProfile = async () => {
+  return await api.get<IUserProfile>(`/user/me`);
+};
+
+//*********** CRUD BLOG ***********//
 export const getBlogs = async () => {
   return await api.get<apiResponse>("/blog/bulk");
 };
@@ -50,18 +65,20 @@ export const createBlog = async (data: CreateBlogInput) => {
   return await api.post<apiResponse>(`/blog/post`, data);
 };
 
-export const getMeProfile = async () => {
-  return await api.get<IUserProfile>(`/user/me`);
-};
-
 export const deleteBlog = async (id: string) => {
   return await api.get<apiResponse>(`/blog/delete/${id}`);
 };
 export const checkUsername = async (username: string, options: AxiosRequestConfig) => {
   return await api.get<apiResponse>(`/user/username-check/${username}`, options);
 };
-export const editProfile = async (payload: any) => {
-  return await api.post<IEditProfileResponse>("/user/update-profile", payload, {
-    headers: { "Content-Type": "application/json" },
-  })
+
+
+//*********** Follow unfollow ***********//
+
+export const deleteFollow = async (authorId: string) => {
+  return await api.delete<apiResponse>(`/user/follow/${authorId}`)
 };
+export const createFollow = async (authorId: string) => {
+  return await api.get<apiResponse>(`/user/follow/${authorId}`)
+};
+

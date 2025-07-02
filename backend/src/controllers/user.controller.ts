@@ -4,7 +4,6 @@ import { getPrisma } from "../lib/db";
 import { Context } from "hono";
 import { sign } from "hono/jwt";
 import { deleteCookie, setCookie } from "hono/cookie";
-import { hash } from "bun";
 import argon from "argon2";
 import { imagekit } from "../utils/fileUpload";
 
@@ -46,15 +45,13 @@ const userSignUp = async (c: Context) => {
 // User Sign In
 const userSignin = async (c: Context) => {
     const body = await c.req.json();
-    // const parsed = sign.safeParse(body);
+    // const parsed = .safeParse(body);
     // if (!parsed.success) {
     //     c.status(411);
     //     return c.json(apiJson("Input not correct", parsed.error.flatten(), false));
     // }
 
     // const data = parsed.data;
-    console.log(body);
-    
 
     if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is undefined!");
     const prisma = getPrisma();
@@ -67,8 +64,7 @@ const userSignin = async (c: Context) => {
             c.status(404);
             return c.json(apiJson("User not found", {}, false));
         }
-        console.log(body.password, user?.password);
-        
+
         const isPasswordValid = await argon.verify(user?.password, body.password)
 
         if (!isPasswordValid) {
@@ -88,23 +84,29 @@ const userSignin = async (c: Context) => {
             maxAge: 60 * 60 * 24, // 1 day
         });
 
-        return c.json(apiJson("User logged in successfully", { id: user.id, username: user.username, name: user.name, profilePic: user.profilePic }, true));
+        return c.json(apiJson("User logged in successfully", {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            profilePic: user.profilePic,
+            bio: user.bio
+        }, true));
+
     } catch (error) {
         console.log(error);
-        
+
         const err = error as Error;
         c.status(500);
         return c.json(apiJson(err.message, {}, false));
     }
 };
 
-// User Sign Out
 const userSignOut = async (c: Context) => {
     deleteCookie(c, "token");
     return c.json(apiJson("User logged out successfully!", {}, true));
 };
 
-// Get Profile
+// Get Profile -- discontinued
 const getProfile = async (c: Context) => {
     try {
         const use = c.get("user");
@@ -116,13 +118,13 @@ const getProfile = async (c: Context) => {
                 id: true,
                 name: true,
                 username: true,
-                followers: true,
-                following: true,
                 profilePic: true,
                 bio: true,
                 _count: {
                     select: {
-                        Blogs: true
+                        Blogs: true,
+                        followers: true,
+                        following: true
                     }
                 },
                 Blogs: {
@@ -140,6 +142,10 @@ const getProfile = async (c: Context) => {
                 },
             },
         });
+        if (!data) {
+            c.status(404);
+            return c.json(apiJson("User not found", {}, false));
+        }
 
         const { _count, ...user } = data!;
 
@@ -147,13 +153,98 @@ const getProfile = async (c: Context) => {
         return c.json(apiJson("User found successfully", {
             ...user,
             postCount: _count.Blogs,
-        }, true));
+            followersCount: _count.followers, // added two things
+            followingCount: _count.following
+        },
+            true
+        ));
+
     } catch (error) {
         const err = error as Error;
         c.status(500);
         return c.json(apiJson(err.message, {}, false));
     }
 };
+
+const getAuthor = async (c: Context) => {
+    try {
+        const authorId = c.req.param('id')
+        const currentUser = c.get("user");
+
+        if (currentUser.id.trim() === "" || !currentUser) {
+            c.status(400)
+            return c.json(apiJson('incorrect user id', {}, false))
+        }
+
+        const prisma = getPrisma();
+
+        const [author, isFollowing, isFollowedBy] = await Promise.all([
+            prisma.user.findUnique({
+                where: { id: authorId },
+                select: {
+                    id: true,
+                    name: true,
+                    username: true,
+                    profilePic: true,
+                    bio: true,
+                    _count: {
+                        select: {
+                            Blogs: true,
+                            followers: true,
+                            following: true,
+                        },
+                    },
+                    Blogs: {
+                        orderBy: {
+                            createdAt: 'desc',
+                        },
+                        select: {
+                            id: true,
+                            user: true,
+                            content: true,
+                            isPublished: true,
+                            title: true,
+                            createdAt: true,
+                        },
+                    },
+                },
+            }),
+
+            prisma.follow.findFirst({
+                where: {
+                    followerId: currentUser.id,
+                    followingId: authorId,
+                },
+            }),
+
+            prisma.follow.findFirst({
+                where: {
+                    followerId: authorId,
+                    followingId: currentUser.id,
+                },
+            }),
+        ]);
+
+
+        const { _count, ...user } = author!;
+
+        c.status(200);
+        return c.json(apiJson("User found successfully", {
+            ...user,
+            postCount: _count.Blogs,
+            isFollowedByAuthor: !!isFollowedBy,
+            isUserFollowing: !!isFollowing,
+            followers: _count.followers,
+            following: _count.following
+        }, true));
+
+    } catch (error) {
+        const err = error as Error;
+        c.status(500);
+        console.log(error);
+        return c.json(apiJson(err.message, {}, false));
+    }
+}
 
 // Delete Profile
 const deleteProfile = async (c: Context) => {
@@ -228,6 +319,7 @@ const changePassword = async (c: Context) => {
     }
 }
 
+// Problem --> Every time upload new photo to imagekit
 const editProfile = async (c: Context) => {
     try {
         const body = await c.req.json()
@@ -247,7 +339,7 @@ const editProfile = async (c: Context) => {
             fileName: `${username}-pic`
         })
 
-        if (!imagekitResponse.url) {            
+        if (!imagekitResponse.url) {
             c.status(500)
             return c.json(apiJson('Something went wrong while uploading image', {}, false))
         }
@@ -269,7 +361,8 @@ const editProfile = async (c: Context) => {
                 bio: true
             }
         });
-        user
+        // console.log(user);
+
 
         return c.json(apiJson("Profile updated successfully", user, true));
 
@@ -288,5 +381,6 @@ export {
     updateProfile,
     isUsernameAvailable,
     changePassword,
-    editProfile
+    editProfile,
+    getAuthor
 };

@@ -5,15 +5,17 @@ const Avatar = ({
   imgUrl,
   size = 40,
   font_Size = 14,
-  name = "?", 
+  name = "?",
+  id
 }: {
+  id: string | undefined,
   imgUrl?: string;
   size?: number;
   font_Size?: number;
   name?: string;
 }) => {
   return (
-    <Link to="/profile">
+    <Link to={`/profile/${id}`}>
       <div
         style={{ width: size, height: size }}
         className="relative inline-flex items-center justify-center overflow-hidden bg-gray-700 rounded-full"

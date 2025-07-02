@@ -7,18 +7,18 @@ const AppBar = () => {
   const { isLoggedIn, user } = useAuthStore();
 
   return (
-    <div className="border-b flex flex-wrap justify-between items-center px-4 sm:px-8 py-3 bg-white shadow-sm">
+    <div className="border-b flex flex-wrap justify-between items-center px-4 sm:px-8 py-3 bg-[gray] shadow-sm" data-theme='light'>
 
       <Link to="/">
-        <div className="font-bold text-2xl sm:text-3xl font-serif">Medium</div>
+        <div className="font-bold text-2xl sm:text-3xl font-serif text-[#000000]">wRITER</div>
       </Link>
 
       {isLoggedIn ? (
         <div className="flex items-center gap-3 mt-3 sm:mt-0">
           <Link to="/create_post">
             <button className="btn btn-primary">Create Post</button>
-          </Link>
-          <Avatar imgUrl={user?.profilePic || ProfilePicUrl} size={32} />
+          </Link> 
+          <Avatar imgUrl={user?.profilePic || ProfilePicUrl} size={32} id={user?.id}/>
         </div>
       ) : (
         <Link to="/signin" className="mt-3 sm:mt-0">

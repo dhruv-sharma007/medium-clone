@@ -2,16 +2,18 @@ import { useRef, useState } from "react"
 import { ProfilePicUrl } from "../lib/static"
 import { editProfile } from '../lib/api'
 import type { IProfileUpdate } from "../vite-env"
-import { Link } from "react-router-dom"
 import imageCompression from 'browser-image-compression'
 import { useAuthStore } from "../store/auth"
 import { useCheckUsername } from "../hooks"
+import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
+    const navigate = useNavigate();
     const { updateUser, user } = useAuthStore()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [profile, setProfile] = useState<IProfileUpdate | null>(user)
-    const [imagePreview, setImagePreview] = useState(ProfilePicUrl)
+    
+    const [imagePreview, setImagePreview] = useState(user?.profilePic || ProfilePicUrl)
     const { message, success: usernameSuccess, setUsername } = useCheckUsername()
 
     const fileToBase64 = async (file: File): Promise<string> => {
@@ -41,7 +43,7 @@ const EditProfile = () => {
         e.preventDefault()
         const file = fileInputRef.current?.files?.[0]
         const reader = file ? await fileToBase64(file) : null
-        
+
         const nameRegex = /^[a-zA-Z\s]+$/
         if (!nameRegex.test(profile?.name || '')) {
             alert("Name can only contain alphabets and spaces")
@@ -52,26 +54,28 @@ const EditProfile = () => {
             alert("Bio cannot be more than 200 characters")
             return
         }
-
+        
         if (profile?.username !== user?.username && !usernameSuccess) {
             alert("Please enter a valid username")
             return
         }
-
+        
         const payload = {
             ...profile,
             profilePic: reader || profile?.profilePic,
         }
-
+        
         try {
             const res = await editProfile(payload)
             const data = res.data.data
+            
             if (res.data.success) updateUser(data)
-            alert("Profile updated: " + res.data.message)
+                alert("Profile updated: " + res.data.message)
         } catch (err: any) {
             alert("Error: " + (err.response?.data?.message || "Failed to update profile"))
         }
     }
+    console.log('ddd',user);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -141,12 +145,13 @@ const EditProfile = () => {
                     </div>
 
                     <div className="flex justify-end space-x-4">
-                        <Link
-                            to="/profile"
+                        <button
+                            type="button"
+                            onClick={() => navigate(-1)}
                             className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100"
                         >
                             Cancel
-                        </Link>
+                        </button>
                         <button
                             type="submit"
                             disabled={profile?.username !== user?.username && !usernameSuccess}
@@ -156,8 +161,8 @@ const EditProfile = () => {
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 

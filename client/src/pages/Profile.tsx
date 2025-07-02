@@ -1,10 +1,14 @@
 import ProfileSection from '../components/Profile/ProfileSection';
-import { useGetProfile } from '../hooks';
+import { useGetAuthor } from '../hooks';
 import { RotateLoading } from '../components/Loading';
 import ProfileBlog from '../components/Profile/ProfileBlog';
+import { useParams } from 'react-router-dom';
 
 const Profile = () => {
-  const { error, loading, profile } = useGetProfile()
+  const { id } = useParams()
+
+  const { error, loading, author } = useGetAuthor(id)
+  console.log(author);
 
   if (loading) return <RotateLoading />
 
@@ -18,23 +22,22 @@ const Profile = () => {
     );
   }
 
-
   return (
     <>
-      <ProfileSection profile={profile} />
+      <ProfileSection author={author} />
 
       <div className="h-full grid grid-cols-1 pt-15 pl-5 pr-5 sm:grid-cols-2 md:grid-cols-3">
-        {profile?.Blogs?.map((blog) => (
+        {author?.Blogs?.map((blog) => (
           <ProfileBlog
-            authorName={profile.name}
+            authorName={author.name}
             content={blog.content}
             title={blog.title}
             id={blog.id}
             key={blog.id}
-            authorId={profile.id}
+            authorId={author.id}
             createdAt={blog.createdAt}
             page="profile"
-            authorPic={blog.user.profilePic}
+            authorPic={author.profilePic}
           />
         ))}
       </div>

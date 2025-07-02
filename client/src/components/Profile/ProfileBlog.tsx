@@ -14,7 +14,7 @@ const ProfileBlog = ({
   title,
   content,
   authorId,
-  page,
+  // page,
   createdAt,
   authorPic
 }: {
@@ -24,7 +24,7 @@ const ProfileBlog = ({
   content: string;
   authorId: string;
   createdAt: Date
-  page: 'profile' | 'home'
+  page?: 'profile' | 'home'
   authorPic: string
 }) => {
   const { user } = useAuthStore()
@@ -67,10 +67,14 @@ const ProfileBlog = ({
             <div className=" flex justify-between items-center">
               {/* avatar with name starts here */}
               <div className="flex items-center gap-3">
-                <Avatar name="authorname" imgUrl={authorPic || ProfilePicUrl} />
-                <div className="text-sm text-gray-600">
-                  <p className="font-semibold">{authorName}</p>
-                </div>
+
+                <Avatar name="authorname" imgUrl={authorPic || ProfilePicUrl} id={authorId} />
+                <Link to={`/profile/${authorId}`}>
+                  <div className="text-sm text-gray-600">
+                    <p className="font-semibold">{authorName}</p>
+                  </div>
+                </Link>
+
               </div>
               {/* avatar ends here */}
 
@@ -108,7 +112,7 @@ const ProfileBlog = ({
                   {/* copy sharable link ends */}
 
                   {/* Edit post  */}
-                  {page === 'profile' &&
+                  {user?.id === authorId &&
                     <li>
                       <a className=" flex justify-between">
                         <p>Edit Post</p>

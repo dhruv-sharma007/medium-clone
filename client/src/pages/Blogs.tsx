@@ -7,16 +7,16 @@ const Blogs = () => {
   const { blogs, loading } = useBlogs();
 
   return (
-    <div>
+    <div className="min-h-screen min-w-screen">
       
       {loading ? (
         <div className="flex justify-center items-center min-h-screen">
           <RotateLoading />
         </div>
       ) : (
-        <div className="flex justify-center">
-          <div className="h-full grid grid-cols-1 pt-15 ">
-            {blogs?.map((blog) => (
+        <div className="h-full w-full flex justify-center p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-15 ">
+            {blogs?.map((blog: any) => (
               <ProfileBlog
                 authorName={blog.user.name}
                 content={blog.content}

@@ -60,7 +60,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
   return (
     <div className="h-screen flex justify-center flex-col">
-      <div className="flex justify-center ring ml-20 mr-20 p-8 rounded-2xl bg-slate-300">
+      <div className="flex justify-center ring ml-20 mr-20 p-8 rounded-2xl bg-slate-300 ">
         <div>
           <div className="text-3xl font-extrabold">
             {type === "signin" ? <p>Log in</p> : <p>Create Account</p>}
@@ -80,6 +80,19 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             )}
             {type === 'signup'
               ?
+              <>
+                <Input
+                  type="text"
+                  label="Username"
+                  placeholder="Enter your username"
+                  onChange={(e) => {
+                    setPostInput((c) => ({ ...c, username: e.target.value }));
+                    setUsername(e.target.value)
+                  }}
+                />
+                <p className="text-red-500">{message}</p>
+              </>
+              :
               <Input
                 type="text"
                 label="Username"
@@ -89,17 +102,8 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   setUsername(e.target.value)
                 }}
               />
-              :
-              <Input
-                type="text"
-                label="Username"
-                placeholder="Enter your username"
-                onChange={(e) => {
-                  setPostInput((c) => ({ ...c, username: e.target.value }));
-                }}
-              />
             }
-            <p className="text-red-500">{message}</p>
+
             <Input
               label="Password"
               placeholder="Enter Your Password"

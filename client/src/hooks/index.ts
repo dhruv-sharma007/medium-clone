@@ -3,11 +3,14 @@ import {
   checkUsername,
   createBlog,
   deleteBlog,
+  deleteFollow,
+  getAuthor,
   getBlog,
   getBlogs,
   getMeProfile,
 } from "../lib/api";
 import type { apiResponse, CreateBlogInput, IGetProfileResponse } from "@medium-clone/common";
+import { createFollow } from '../lib/api';
 
 // --------- useBlogs ---------
 const useBlogs = () => {
@@ -145,38 +148,36 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
     setSuccess(true);
     setMessage("");
     setError(null);
-
     window.clearTimeout(debounceRef.current);
     abortRef.current?.abort();
 
-    const trimmed = username.trim();
-
-    if (trimmed.length < minLength) {
+    if (username.trim().length < minLength) {
       setLoading(false);
       setSuccess(false);
       setMessage(`Username must be at least ${minLength} characters`);
       return;
     }
 
-    const hasInvalidChars = /[^a-z0-9_]/.test(trimmed); // also ensures lowercase
+    const hasInvalidChars = /[^a-z0-9_]/.test(username.trim()); // also ensures lowercase
     if (hasInvalidChars) {
       setSuccess(false);
       setMessage("Username must only contain lowercase letters, numbers, or underscores");
       return;
     }
 
-    if (trimmed !== username) {
+    if (username.trim() !== username) {
       setSuccess(false);
       setMessage("Username cannot have leading or trailing spaces");
       return;
     }
+    setMessage('')
 
     setLoading(true);
     debounceRef.current = window.setTimeout(() => {
       const ac = new AbortController();
       abortRef.current = ac;
 
-      checkUsername(trimmed, { signal: ac.signal })
+      checkUsername(username.trim(), { signal: ac.signal })
         .then(res => {
           setSuccess(res.data.success);
           setMessage(res.data.message);
@@ -217,6 +218,66 @@ export interface IBlog {
   user: Author;
 }
 
+const useGetAuthor = (id: string | undefined) => {
+  const [loading, setLoading] = useState<boolean>();
+  const [author, setAuthor] = useState<IGetProfileResponse>();
+  const [error, setError] = useState<Error | null>(null);
+  // const [type, setType] = useState<"signing" | "signup" >(null) 
+
+  useEffect(() => {
+    setLoading(true)
+    getAuthor(id || '')
+      .then((res) => {
+        console.log(res.data);
+
+        setAuthor(res.data.data)
+      })
+      .catch((e) => {
+        setError(e)
+      })
+      .finally(() =>
+        setLoading(false)
+      )
+  }, [id])
+  return { loading, author, error }
+}
+
+const useFollow = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [response, setResponse] = useState<apiResponse | null>(null);
+
+  const createFollowHook = async (authorId: string | undefined) => {
+    setLoading(true);
+    setError(null);
+    setResponse(null);
+    try {
+      const res = await createFollow(authorId || '');
+      setResponse(res.data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteFollowHook = async (authorId: string | undefined) => {
+    setLoading(true);
+    setError(null);
+    setResponse(null);
+    try {
+      const res = await deleteFollow(authorId || '');
+      setResponse(res.data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loading, error, response, createFollowHook, deleteFollowHook };
+};
+
 export {
   useBlogs,
   useBlog,
@@ -224,4 +285,6 @@ export {
   useDeleteBlog,
   useGetProfile,
   useCheckUsername,
+  useGetAuthor,
+  useFollow
 }
