@@ -3,6 +3,7 @@ import { useGetAuthor } from '../hooks';
 import { RotateLoading } from '../components/Loading';
 import ProfileBlog from '../components/Profile/ProfileBlog';
 import { useParams } from 'react-router-dom';
+import Post from '../components/Profile/Post';
 
 const Profile = () => {
   const { id } = useParams()
@@ -26,7 +27,11 @@ const Profile = () => {
     <>
       <ProfileSection author={author} />
 
-      <div className="h-full grid grid-cols-1 pt-15 pl-5 pr-5 sm:grid-cols-2 md:grid-cols-3">
+      <div className='p-5 h-full w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'>
+        <Post />
+      </div>
+
+      {/* <div className="h-full grid grid-cols-1 pt-15 pl-5 pr-5 sm:grid-cols-2 md:grid-cols-3">
         {author?.Blogs?.map((blog) => (
           <ProfileBlog
             authorName={author.name}
@@ -40,7 +45,8 @@ const Profile = () => {
             authorPic={author.profilePic}
           />
         ))}
-      </div>
+      </div> */}
+
 
     </>
   );

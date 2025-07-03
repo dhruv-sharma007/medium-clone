@@ -42,7 +42,8 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           name: res.data.data.name,
           id: res.data.data.id,
           username: res.data.data.username,
-          profilePic: res.data.data.profilePic
+          profilePic: res.data.data.profilePic,
+          bio: res.data.data.bio
         });
         toast.success(res.data.message);
       } else {

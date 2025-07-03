@@ -236,7 +236,7 @@ const getAuthor = async (c: Context) => {
             isUserFollowing: !!isFollowing,
             followers: _count.followers,
             following: _count.following
-        }, true));
+        }, true));  
 
     } catch (error) {
         const err = error as Error;

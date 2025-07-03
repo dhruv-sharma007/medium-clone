@@ -12,6 +12,7 @@ const EditProfile = () => {
     const { updateUser, user } = useAuthStore()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [profile, setProfile] = useState<IProfileUpdate | null>(user)
+    console.log(user);
     
     const [imagePreview, setImagePreview] = useState(user?.profilePic || ProfilePicUrl)
     const { message, success: usernameSuccess, setUsername } = useCheckUsername()
@@ -137,7 +138,7 @@ const EditProfile = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
                         <textarea
                             name="bio"
-                            value={profile?.bio || ''}
+                            value={profile?.bio}
                             rows={3}
                             onChange={(e) => setProfile(prev => ({ ...(prev || {}), bio: e.target.value }))}
                             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
