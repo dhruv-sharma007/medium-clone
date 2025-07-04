@@ -3,19 +3,30 @@ import { Context } from "hono";
 import { getPrisma } from "../lib/db";
 import { apiJson } from "../utils/ApiResponse";
 import { Prisma } from "@prisma/client";
+import { ZCreateBlog } from "../schema";
+import { imagekit } from "../utils/fileUpload";
 
 // POST: Create a blog
 const postBlog = async (c: Context) => {
     try {
         const body = await c.req.json();
-        const parsed = createBlogInput.safeParse(body);
+        const parsed = ZCreateBlog.safeParse(body);
         if (!parsed.success) {
             c.status(411);
-            return c.json(apiJson("Provide correct input", {}, false));
+            return c.json(apiJson("Provide correct input", parsed.error.flatten(), false));
         }
 
         const prisma = getPrisma();
-        const { title, content } = parsed.data;
+        const { title, content, featuredImg: imageBase64, isPublished } = parsed.data;
+
+        if (imageBase64 && !imageBase64.startsWith("http") && !imageBase64.startsWith("data:image")) {
+            return c.json({ message: "Invalid profilePic format" }, 400)
+        }
+
+        const imagekitResponse = await imagekit.upload({
+            file: imageBase64,
+            fileName: `${c.get("user").id}-${title.trim()}-pic`
+        })
 
         await prisma.blog.create({
             data: {
@@ -23,8 +34,14 @@ const postBlog = async (c: Context) => {
                 content,
                 slug: title.split(" ").join("-").toLowerCase(),
                 userId: c.get("user").id,
+                isPublished,
+                featuredImg: imagekitResponse.url
             },
         });
+        if (!imagekitResponse.url) {
+            c.status(500)
+            return c.json(apiJson('Something went wrong while uploading image', {}, false))
+        }
 
         c.status(201);
         return c.json(apiJson("Blog created successfully", {}, true));
@@ -82,15 +99,27 @@ const getBlog = async (c: Context) => {
                 title: true,
                 content: true,
                 createdAt: true,
+                featuredImg: true,
+                _count: {
+                    select: {
+                        comments: true,
+                        likes: true,
+                    }
+                },
                 user: {
                     select: {
                         id: true,
                         name: true,
                         username: true,
+                        bio: true,
+                        profilePic: true
                     },
                 },
             },
         });
+
+        // console.log(blog); 
+        
         if (blog === null || !blog) {
             c.status(404);
             return c.json(apiJson("Blog Not found", blog, false));

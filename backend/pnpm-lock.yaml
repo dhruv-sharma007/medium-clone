@@ -26,6 +26,9 @@ importers:
       imagekit:
         specifier: ^6.0.0
         version: 6.0.0
+      zod:
+        specifier: ^3.25.72
+        version: 3.25.72
     devDependencies:
       '@types/bun':
         specifier: latest
@@ -235,14 +238,14 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
-  zod@3.25.67:
-    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
+  zod@3.25.72:
+    resolution: {integrity: sha512-Cl+fe4dNL4XumOBNBsr0lHfA80PQiZXHI4xEMTEr8gt6aGz92t3lBA32e71j9+JeF/VAYvdfBnuwJs+BMx/BrA==}
 
 snapshots:
 
   '@medium-clone/common@1.0.51':
     dependencies:
-      zod: 3.25.67
+      zod: 3.25.72
 
   '@phc/format@1.0.0': {}
 
@@ -427,4 +430,4 @@ snapshots:
 
   uuid@8.3.2: {}
 
-  zod@3.25.67: {}
+  zod@3.25.72: {}

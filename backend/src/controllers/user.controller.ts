@@ -58,7 +58,7 @@ const userSignin = async (c: Context) => {
 
     try {
         const user = await prisma.user.findUnique({
-            where: { username: body.username },
+            where: { username: body.username.trim() },
         });
         if (!user) {
             c.status(404);
