@@ -9,30 +9,39 @@ import {
   getBlogs,
   getMeProfile,
 } from "../lib/api";
-import type { apiResponse, CreateBlogInput, IGetProfileResponse } from "@medium-clone/common";
-import { createFollow } from '../lib/api';
+import type {
+  apiResponse,
+  CreateBlogInput,
+  IGetProfileResponse,
+} from "@medium-clone/common";
+import { createFollow } from "../lib/api";
+import type { IGetProfileResp, POST } from "../vite-env";
 
 // --------- useBlogs ---------
-const useBlogs = () => {
+const useBlogs = (page: number | undefined) => {
   const [loading, setLoading] = useState(true);
-  const [blogs, setBlogs] = useState<any>([]);
+  const [blogs, setBlogs] = useState<{ posts: POST[]; totalPosts: number }>();
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    getBlogs()
-      .then(res => {
+    getBlogs(page)
+      .then((res) => {
+        // console.log(res);
+
         if (!cancelled) setBlogs(res.data.data);
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) setError(err as Error);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
-    return () => { cancelled = true };
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [page]);
 
   return { loading, blogs, error };
 };
@@ -47,16 +56,18 @@ const useBlog = (id: string) => {
     let cancelled = false;
     setLoading(true);
     getBlog(id)
-      .then(res => {
+      .then((res) => {
         if (!cancelled) setBlog(res.data.data);
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) setError(err as Error);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
-    return () => { cancelled = true };
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   return { loading, blog, error };
@@ -118,16 +129,18 @@ const useGetProfile = () => {
     let cancelled = false;
     setLoading(true);
     getMeProfile()
-      .then(res => {
+      .then((res) => {
         if (!cancelled) setProfile(res.data.data);
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) setError(err as Error);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
-    return () => { cancelled = true };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { loading, error, profile };
@@ -161,7 +174,9 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
     const hasInvalidChars = /[^a-z0-9_]/.test(username.trim()); // also ensures lowercase
     if (hasInvalidChars) {
       setSuccess(false);
-      setMessage("Username must only contain lowercase letters, numbers, or underscores");
+      setMessage(
+        "Username must only contain lowercase letters, numbers, or underscores",
+      );
       return;
     }
 
@@ -170,7 +185,7 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
       setMessage("Username cannot have leading or trailing spaces");
       return;
     }
-    setMessage('')
+    setMessage("");
 
     setLoading(true);
     debounceRef.current = window.setTimeout(() => {
@@ -178,11 +193,11 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
       abortRef.current = ac;
 
       checkUsername(username.trim(), { signal: ac.signal })
-        .then(res => {
+        .then((res) => {
           setSuccess(res.data.success);
           setMessage(res.data.message);
         })
-        .catch(e => {
+        .catch((e) => {
           if (e.name !== "AbortError") {
             setSuccess(false);
             setError(e);
@@ -203,7 +218,6 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
   return { username, setUsername, loading, success, message, error };
 };
 
-
 // --------- Types ---------
 export interface Author {
   id: number;
@@ -220,27 +234,25 @@ export interface IBlog {
 
 const useGetAuthor = (id: string | undefined) => {
   const [loading, setLoading] = useState<boolean>();
-  const [author, setAuthor] = useState<IGetProfileResponse>();
+  const [author, setAuthor] = useState<IGetProfileResp>();
   const [error, setError] = useState<Error | null>(null);
-  // const [type, setType] = useState<"signing" | "signup" >(null) 
+  // const [type, setType] = useState<"signing" | "signup" >(null)
 
   useEffect(() => {
-    setLoading(true)
-    getAuthor(id || '')
+    setLoading(true);
+    getAuthor(id || "")
       .then((res) => {
         console.log(res.data);
 
-        setAuthor(res.data.data)
+        setAuthor(res.data.data);
       })
       .catch((e) => {
-        setError(e)
+        setError(e);
       })
-      .finally(() =>
-        setLoading(false)
-      )
-  }, [id])
-  return { loading, author, error }
-}
+      .finally(() => setLoading(false));
+  }, [id]);
+  return { loading, author, error };
+};
 
 const useFollow = () => {
   const [loading, setLoading] = useState(false);
@@ -252,7 +264,7 @@ const useFollow = () => {
     setError(null);
     setResponse(null);
     try {
-      const res = await createFollow(authorId || '');
+      const res = await createFollow(authorId || "");
       setResponse(res.data);
     } catch (err) {
       setError(err as Error);
@@ -266,7 +278,7 @@ const useFollow = () => {
     setError(null);
     setResponse(null);
     try {
-      const res = await deleteFollow(authorId || '');
+      const res = await deleteFollow(authorId || "");
       setResponse(res.data);
     } catch (err) {
       setError(err as Error);
@@ -286,5 +298,5 @@ export {
   useGetProfile,
   useCheckUsername,
   useGetAuthor,
-  useFollow
-}
+  useFollow,
+};

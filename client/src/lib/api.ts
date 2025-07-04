@@ -5,7 +5,12 @@ import type {
   apiResponse,
 } from "@medium-clone/common";
 import axios, { type AxiosRequestConfig } from "axios";
-import type { IEditProfileResponse, ILOGINRESPONSE, IUserProfile } from "../vite-env";
+import type {
+  IEditProfileResponse,
+  ILOGINRESPONSE,
+  IUserProfile,
+  TGetBlogsResponse,
+} from "../vite-env";
 import { useAuthStore } from "../store/auth";
 
 export const api = axios.create({
@@ -24,7 +29,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 //*********** Profile and user ***********//
@@ -42,10 +47,10 @@ export const signoutApi = async () => {
 export const editProfile = async (payload: object) => {
   return await api.post<IEditProfileResponse>("/user/update-profile", payload, {
     headers: { "Content-Type": "application/json" },
-  })
+  });
 };
 export const getAuthor = async (id: string) => {
-  return await api.get<IUserProfile>(`/user/getAuthor/${id}`)
+  return await api.get<IUserProfile>(`/user/getAuthor/${id}`);
 };
 
 export const getMeProfile = async () => {
@@ -53,8 +58,8 @@ export const getMeProfile = async () => {
 };
 
 //*********** CRUD BLOG ***********//
-export const getBlogs = async () => {
-  return await api.get<apiResponse>("/blog/bulk");
+export const getBlogs = async (page: number | undefined) => {
+  return await api.get<TGetBlogsResponse>(`/blog/bulk?p=${page}`);
 };
 
 export const getBlog = async (id: string) => {
@@ -68,17 +73,21 @@ export const createBlog = async (data: CreateBlogInput) => {
 export const deleteBlog = async (id: string) => {
   return await api.get<apiResponse>(`/blog/delete/${id}`);
 };
-export const checkUsername = async (username: string, options: AxiosRequestConfig) => {
-  return await api.get<apiResponse>(`/user/username-check/${username}`, options);
+export const checkUsername = async (
+  username: string,
+  options: AxiosRequestConfig,
+) => {
+  return await api.get<apiResponse>(
+    `/user/username-check/${username}`,
+    options,
+  );
 };
-
 
 //*********** Follow unfollow ***********//
 
 export const deleteFollow = async (authorId: string) => {
-  return await api.delete<apiResponse>(`/user/follow/${authorId}`)
+  return await api.delete<apiResponse>(`/user/follow/${authorId}`);
 };
 export const createFollow = async (authorId: string) => {
-  return await api.get<apiResponse>(`/user/follow/${authorId}`)
+  return await api.get<apiResponse>(`/user/follow/${authorId}`);
 };
-

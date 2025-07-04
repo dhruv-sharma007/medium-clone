@@ -11,5 +11,3 @@ export const AuthRoute = ({ children }: { children: JSX.Element }) => {
   const { isLoggedIn } = useAuthStore();
   return isLoggedIn ? <Navigate to="/" replace /> : children;
 };
-
-

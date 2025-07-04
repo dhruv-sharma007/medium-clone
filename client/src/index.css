@@ -19,3 +19,6 @@
   /* IE 10+ */
 }
 
+html {
+  scroll-behavior: smooth
+}

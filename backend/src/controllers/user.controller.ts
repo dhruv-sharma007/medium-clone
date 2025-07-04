@@ -22,14 +22,14 @@ const userSignUp = async (c: Context) => {
     const prisma = getPrisma();
 
     const existingUser = await prisma.user.findUnique({
-        where: { username: data.username }
+        where: { username: data.username },
     });
 
     if (existingUser) {
         return c.json(apiJson("User already exists", {}, false), 400);
     }
 
-    const hashedPassword = await argon.hash(data.password)
+    const hashedPassword = await argon.hash(data.password);
     await prisma.user.create({
         data: {
             username: data.username,
@@ -65,17 +65,17 @@ const userSignin = async (c: Context) => {
             return c.json(apiJson("User not found", {}, false));
         }
 
-        const isPasswordValid = await argon.verify(user?.password, body.password)
+        const isPasswordValid = await argon.verify(user?.password, body.password);
 
         if (!isPasswordValid) {
-            c.status(401)
-            return c.json(apiJson('Password incorrect', {}, false))
+            c.status(401);
+            return c.json(apiJson("Password incorrect", {}, false));
         }
 
         const token = await sign(
             { id: user.id, name: user.name, username: user.username },
             process.env.JWT_SECRET!,
-            "HS256"
+            "HS256",
         );
         setCookie(c, "token", token, {
             path: "/",
@@ -84,14 +84,19 @@ const userSignin = async (c: Context) => {
             maxAge: 60 * 60 * 24, // 1 day
         });
 
-        return c.json(apiJson("User logged in successfully", {
-            id: user.id,
-            username: user.username,
-            name: user.name,
-            profilePic: user.profilePic,
-            bio: user.bio
-        }, true));
-
+        return c.json(
+            apiJson(
+                "User logged in successfully",
+                {
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    profilePic: user.profilePic,
+                    bio: user.bio,
+                },
+                true,
+            ),
+        );
     } catch (error) {
         console.log(error);
 
@@ -124,20 +129,26 @@ const getProfile = async (c: Context) => {
                     select: {
                         Blogs: true,
                         followers: true,
-                        following: true
-                    }
+                        following: true,
+                    },
                 },
                 Blogs: {
                     orderBy: {
-                        createdAt: 'desc'
+                        createdAt: "desc",
                     },
                     select: {
                         id: true,
-                        user: true,
-                        content: true,
-                        isPublished: true,
                         title: true,
-                        createdAt: true
+                        featuredImg: true,
+                        isPublished: true,
+                        slug: true,
+                        createdAt: true,
+                        _count: {
+                            select: {
+                                comments: true,
+                                likes: true,
+                            },
+                        },
                     },
                 },
             },
@@ -150,15 +161,18 @@ const getProfile = async (c: Context) => {
         const { _count, ...user } = data!;
 
         c.status(200);
-        return c.json(apiJson("User found successfully", {
-            ...user,
-            postCount: _count.Blogs,
-            followersCount: _count.followers, // added two things
-            followingCount: _count.following
-        },
-            true
-        ));
-
+        return c.json(
+            apiJson(
+                "User found successfully",
+                {
+                    ...data,
+                    postCount: _count.Blogs,
+                    followersCount: _count.followers, // added two things
+                    followingCount: _count.following,
+                },
+                true,
+            ),
+        );
     } catch (error) {
         const err = error as Error;
         c.status(500);
@@ -168,12 +182,12 @@ const getProfile = async (c: Context) => {
 
 const getAuthor = async (c: Context) => {
     try {
-        const authorId = c.req.param('id')
+        const authorId = c.req.param("id");
         const currentUser = c.get("user");
 
         if (currentUser.id.trim() === "" || !currentUser) {
-            c.status(400)
-            return c.json(apiJson('incorrect user id', {}, false))
+            c.status(400);
+            return c.json(apiJson("incorrect user id", {}, false));
         }
 
         const prisma = getPrisma();
@@ -196,15 +210,21 @@ const getAuthor = async (c: Context) => {
                     },
                     Blogs: {
                         orderBy: {
-                            createdAt: 'desc',
+                            createdAt: "desc",
                         },
                         select: {
                             id: true,
-                            user: true,
-                            content: true,
-                            isPublished: true,
                             title: true,
+                            featuredImg: true,
+                            isPublished: true,
+                            slug: true,
                             createdAt: true,
+                            _count: {
+                                select: {
+                                    comments: true,
+                                    likes: true,
+                                },
+                            },
                         },
                     },
                 },
@@ -225,26 +245,30 @@ const getAuthor = async (c: Context) => {
             }),
         ]);
 
-
         const { _count, ...user } = author!;
 
         c.status(200);
-        return c.json(apiJson("User found successfully", {
-            ...user,
-            postCount: _count.Blogs,
-            isFollowedByAuthor: !!isFollowedBy,
-            isUserFollowing: !!isFollowing,
-            followers: _count.followers,
-            following: _count.following
-        }, true));  
-
+        return c.json(
+            apiJson(
+                "User found successfully",
+                {
+                    ...user,
+                    postCount: _count.Blogs,
+                    isFollowedByAuthor: !!isFollowedBy,
+                    isUserFollowing: !!isFollowing,
+                    followers: _count.followers,
+                    following: _count.following,
+                },
+                true,
+            ),
+        );
     } catch (error) {
         const err = error as Error;
         c.status(500);
         console.log(error);
         return c.json(apiJson(err.message, {}, false));
     }
-}
+};
 
 // Delete Profile
 const deleteProfile = async (c: Context) => {
@@ -263,114 +287,125 @@ const updateProfile = async (c: Context) => {
 };
 
 const isUsernameAvailable = async (c: Context) => {
-    const username = c.req.param('username')
+    const username = c.req.param("username");
     if (username.trim() === "" || !username) {
-        c.status(400)
-        return c.json(apiJson('send username correctly', {}, false))
+        c.status(400);
+        return c.json(apiJson("send username correctly", {}, false));
     }
 
-    const prisma = getPrisma()
+    const prisma = getPrisma();
 
-    const user = await prisma.user.findUnique({ where: { username } })
+    const user = await prisma.user.findUnique({ where: { username } });
 
     if (user?.username === username) {
-        c.status(200)
-        return c.json(apiJson('username already exist', {}, false))
+        c.status(200);
+        return c.json(apiJson("username already exist", {}, false));
     }
 
-    c.status(202)
-    return c.json(apiJson('', {}, true))
-}
+    c.status(202);
+    return c.json(apiJson("", {}, true));
+};
 
 const changePassword = async (c: Context) => {
     try {
-        const { oldPassword, newPassword } = await c.req.json()
+        const { oldPassword, newPassword } = await c.req.json();
 
         if (oldPassword === newPassword) {
-            c.status(400)
-            return c.json(apiJson('Old passowrd and new password should different', {}, false))
+            c.status(400);
+            return c.json(
+                apiJson("Old passowrd and new password should different", {}, false),
+            );
         }
 
-        const prisma = getPrisma()
+        const prisma = getPrisma();
 
-        const user = await prisma.user.findUnique({ where: { username: c.get("user").username } })
+        const user = await prisma.user.findUnique({
+            where: { username: c.get("user").username },
+        });
         if (!user) {
-            c.status(404)
-            return c.json(apiJson('User not found', {}, false))
+            c.status(404);
+            return c.json(apiJson("User not found", {}, false));
         }
-        const isPasswordMatched = await argon.verify(oldPassword, user?.password)
+        const isPasswordMatched = await argon.verify(oldPassword, user?.password);
         if (!isPasswordMatched) {
-            c.status(401)
-            return c.json(apiJson('Password incorrect', {}, false))
+            c.status(401);
+            return c.json(apiJson("Password incorrect", {}, false));
         }
-        const hashedPassword = await argon.hash(newPassword)
+        const hashedPassword = await argon.hash(newPassword);
         await prisma.user.update({
             where: {
-                username: c.get("user").username
+                username: c.get("user").username,
             },
             data: {
-                password: hashedPassword
-            }
-        })
+                password: hashedPassword,
+            },
+        });
     } catch (error) {
-        const err = error as Error
-        c.status(500)
-        return c.json(apiJson(`${err.name} || ${err.message} || ${err.cause}`, {}, false))
+        const err = error as Error;
+        c.status(500);
+        return c.json(
+            apiJson(`${err.name} || ${err.message} || ${err.cause}`, {}, false),
+        );
     }
-}
+};
 
 // Problem --> Every time upload new photo to imagekit
 const editProfile = async (c: Context) => {
     try {
-        const body = await c.req.json()
+        const body = await c.req.json();
 
-        const { name, username, bio, profilePic } = body
+        const { name, username, bio, profilePic } = body;
 
         if (!name || !username) {
-            return c.json({ message: "Missing name or username" }, 400)
+            return c.json({ message: "Missing name or username" }, 400);
         }
 
-        if (profilePic && !profilePic.startsWith("http") && !profilePic.startsWith("data:image")) {
-            return c.json({ message: "Invalid profilePic format" }, 400)
+        if (
+            profilePic &&
+            !profilePic.startsWith("http") &&
+            !profilePic.startsWith("data:image")
+        ) {
+            return c.json({ message: "Invalid profilePic format" }, 400);
         }
 
         const imagekitResponse = await imagekit.upload({
             file: profilePic,
-            fileName: `${username}-pic`
-        })
+            fileName: `${username}-pic`,
+        });
 
         if (!imagekitResponse.url) {
-            c.status(500)
-            return c.json(apiJson('Something went wrong while uploading image', {}, false))
+            c.status(500);
+            return c.json(
+                apiJson("Something went wrong while uploading image", {}, false),
+            );
         }
 
         let user = await getPrisma().user.update({
             where: {
-                id: c.get('user').id
-            }, data: {
+                id: c.get("user").id,
+            },
+            data: {
                 name,
                 username,
                 bio: bio || "",
-                profilePic: imagekitResponse.url
+                profilePic: imagekitResponse.url,
             },
             select: {
                 id: true,
                 username: true,
                 profilePic: true,
                 name: true,
-                bio: true
-            }
+                bio: true,
+            },
         });
         // console.log(user);
 
-
         return c.json(apiJson("Profile updated successfully", user, true));
-
     } catch (err) {
-        console.error(err)
-        return c.json({ message: "Internal Server Error" }, 500)
+        console.error(err);
+        return c.json({ message: "Internal Server Error" }, 500);
     }
-}
+};
 
 export {
     userSignUp,
@@ -382,5 +417,5 @@ export {
     isUsernameAvailable,
     changePassword,
     editProfile,
-    getAuthor
+    getAuthor,
 };

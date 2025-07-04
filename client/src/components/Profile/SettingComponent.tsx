@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 // import ThemeToggler from '../ThemeToggler';
 
 const SettingComponent = () => {
@@ -8,7 +8,7 @@ const SettingComponent = () => {
         <ThemeToggler />
       </div> */}
     </>
-  )
-}
+  );
+};
 
-export default SettingComponent
+export default SettingComponent;

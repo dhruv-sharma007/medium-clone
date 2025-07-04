@@ -10,7 +10,7 @@ export const userAuth = async (c: Context, next: Next) => {
   }
 
   try {
-    const payload = await verify(token, process.env.JWT_SECRET!, "HS256") as {
+    const payload = (await verify(token, process.env.JWT_SECRET!, "HS256")) as {
       id: number;
       name: string;
       username: string;

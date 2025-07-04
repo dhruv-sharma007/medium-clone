@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@medium-clone/common": "^1.0.8",
+    "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
     "browser-image-compression": "^2.0.2",

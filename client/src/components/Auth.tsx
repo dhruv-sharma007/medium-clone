@@ -12,21 +12,19 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const { login } = useAuthStore();
 
   const [loading, setLoading] = useState(false);
-  const [isFormField, setIsFormField] = useState<boolean>(false)
+  const [isFormField, setIsFormField] = useState<boolean>(false);
   const [postInput, setPostInput] = useState<SignupInput>({
     name: "",
     password: "",
     username: "",
   });
 
-  const { message, success: usernameSuccess, setUsername } = useCheckUsername()
+  const { message, success: usernameSuccess, setUsername } = useCheckUsername();
 
   useEffect(() => {
-    const { password, username, name } = postInput
-    setIsFormField(
-      [password, username, name].every(v => v?.trim() !== "")
-    )
-  }, [postInput])
+    const { password, username, name } = postInput;
+    setIsFormField([password, username, name].every((v) => v?.trim() !== ""));
+  }, [postInput]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -36,14 +34,14 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
       if (type === "signin") {
         const res = await signinApi(postInput);
-        console.log(postInput)
+        console.log(postInput);
 
         login({
           name: res.data.data.name,
           id: res.data.data.id,
           username: res.data.data.username,
           profilePic: res.data.data.profilePic,
-          bio: res.data.data.bio
+          bio: res.data.data.bio,
         });
         toast.success(res.data.message);
       } else {
@@ -79,8 +77,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 }}
               />
             )}
-            {type === 'signup'
-              ?
+            {type === "signup" ? (
               <>
                 <Input
                   type="text"
@@ -88,22 +85,22 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   placeholder="Enter your username"
                   onChange={(e) => {
                     setPostInput((c) => ({ ...c, username: e.target.value }));
-                    setUsername(e.target.value)
+                    setUsername(e.target.value);
                   }}
                 />
                 <p className="text-red-500">{message}</p>
               </>
-              :
+            ) : (
               <Input
                 type="text"
                 label="Username"
                 placeholder="Enter your username"
                 onChange={(e) => {
                   setPostInput((c) => ({ ...c, username: e.target.value }));
-                  setUsername(e.target.value)
+                  setUsername(e.target.value);
                 }}
               />
-            }
+            )}
 
             <Input
               label="Password"
@@ -121,7 +118,6 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             >
               Submit
             </button>
-
           </form>
           {type === "signup" ? (
             <div className="text-slate-400">

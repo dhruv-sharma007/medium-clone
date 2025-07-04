@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const EditBlog = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default EditBlog
+export default EditBlog;

@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "build": "tsc",
-    "start": "bun ./dist/index.js"
+    "start": "bun ./dist/index.js",
+    "format": "prettier --write './src/**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
     "@medium-clone/common": "^1.0.51",

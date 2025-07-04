@@ -1,4 +1,4 @@
-import "dotenv/config"
+import "dotenv/config";
 import { Hono } from "hono";
 import userRoute from "./routes/user.route";
 import blogRouter from "./routes/blog.route";
@@ -26,5 +26,5 @@ app.route("/api/v1/blog", blogRouter);
 Bun.serve({
   port: 8787,
   fetch: app.fetch,
-})
-console.log(`🚀 Server running at http://localhost:${8787}`)
+});
+console.log(`🚀 Server running at http://localhost:${8787}`);

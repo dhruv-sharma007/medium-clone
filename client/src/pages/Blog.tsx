@@ -15,8 +15,9 @@ const Blog = () => {
     getBlog(id)
       .then((res) => {
         setBlog(res.data.data);
-      }).catch((e) => { 
-        console.error(e)
+      })
+      .catch((e) => {
+        console.error(e);
       })
       .finally(() => {
         setLoading(false);

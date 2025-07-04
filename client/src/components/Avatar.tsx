@@ -6,9 +6,9 @@ const Avatar = ({
   size = 40,
   font_Size = 14,
   name = "?",
-  id
+  id,
 }: {
-  id: string | undefined,
+  id: string | undefined;
   imgUrl?: string;
   size?: number;
   font_Size?: number;
@@ -40,4 +40,3 @@ const Avatar = ({
 };
 
 export default Avatar;
-

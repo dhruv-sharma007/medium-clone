@@ -1,5 +1,11 @@
 import { Hono } from "hono";
-import { deleteBlog, getBlog, getBulkBlogs, postBlog, updateBlog } from "../controllers/blog.controller";
+import {
+  deleteBlog,
+  getBlog,
+  getBulkBlogs,
+  postBlog,
+  updateBlog,
+} from "../controllers/blog.controller";
 import { userAuth } from "../middlewares/userAuth.mid";
 
 type Variables = {
@@ -18,6 +24,6 @@ blogRouter.get("/bulk", getBulkBlogs);
 blogRouter.post("/post", userAuth, postBlog);
 blogRouter.get("/get/:id", userAuth, getBlog);
 blogRouter.get("/delete/:id", userAuth, deleteBlog);
-blogRouter.put("/update/:id", userAuth, updateBlog)
+blogRouter.put("/update/:id", userAuth, updateBlog);
 
 export default blogRouter;

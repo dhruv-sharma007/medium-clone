@@ -1,17 +1,17 @@
-import ProfileSection from '../components/Profile/ProfileSection';
-import { useGetAuthor } from '../hooks';
-import { RotateLoading } from '../components/Loading';
-import ProfileBlog from '../components/Profile/ProfileBlog';
-import { useParams } from 'react-router-dom';
-import Post from '../components/Profile/Post';
+import ProfileSection from "../components/Profile/ProfileSection";
+import { useGetAuthor } from "../hooks";
+import { RotateLoading } from "../components/Loading";
+// import ProfileBlog from "../components/Profile/ProfileBlog"; 
+import { useParams } from "react-router-dom";
+import Post from "../components/Profile/Post";
 
 const Profile = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const { error, loading, author } = useGetAuthor(id)
-  console.log(author);
+  const { error, loading, author } = useGetAuthor(id);
+  // console.log(author); 
 
-  if (loading) return <RotateLoading />
+  if (loading) return <RotateLoading />;
 
   if (error) {
     return (
@@ -27,8 +27,21 @@ const Profile = () => {
     <>
       <ProfileSection author={author} />
 
-      <div className='p-5 h-full w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'>
-        <Post />
+      <div className="p-5 h-full w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 scale-93 gap-14 ">
+        {author?.Blogs.map((blog) => (
+          <Post
+            authorBio={author.bio}
+            authorName={author.name}
+            comments={blog._count.comments}
+            likes={blog._count.likes}
+            featuredImge={blog.featuredImg}
+            profileImage={author.profilePic}
+            title={blog.title}
+            isPublished={blog.isPublished}
+            authorId={author.id}
+            key={blog.id}
+          />
+        ))}
       </div>
 
       {/* <div className="h-full grid grid-cols-1 pt-15 pl-5 pr-5 sm:grid-cols-2 md:grid-cols-3">
@@ -46,8 +59,6 @@ const Profile = () => {
           />
         ))}
       </div> */}
-
-
     </>
   );
 };
