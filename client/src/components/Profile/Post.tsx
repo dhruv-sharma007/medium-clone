@@ -1,8 +1,8 @@
 import { BiLike } from "react-icons/bi";
 import { MdOutlineInsertComment } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Published from '../ui/Published';
-import PostMenu from '../PostMenu';
+import Published from "../ui/Published";
+import PostMenu from "../PostMenu";
 
 interface PostProps {
   profileImage: string;
@@ -12,9 +12,10 @@ interface PostProps {
   featuredImage: string;
   likes: number;
   comments: number;
-  isPublished?: boolean;
+  isPublished: boolean | null;
   authorId: string;
   blogId: string;
+  badge: 'show' | 'hide'
 }
 
 const Post = ({
@@ -25,9 +26,10 @@ const Post = ({
   featuredImage,
   likes,
   comments,
-  isPublished,
+  isPublished = null,
   authorId,
   blogId,
+  badge
 }: PostProps) => {
   return (
     <div className="min-w-120 max-w-150 max-h-188 rounded-xl p-4 bg-white shadow-md transition hover:shadow-lg">
@@ -41,18 +43,24 @@ const Post = ({
           />
           <div>
             <p className="font-bold">{authorName}</p>
-            <p className="text-xs text-gray-500 max-w-[160px] truncate">{authorBio}</p>
+            <p className="text-xs text-gray-500 max-w-[160px] truncate">
+              {authorBio}
+            </p>
           </div>
         </Link>
         <div className="flex items-center gap-2">
-          {isPublished && <Published isPublished />}
+
+          {badge === 'show' ? isPublished ? <Published isPublished={true} /> : <Published isPublished={false} /> : <></>}
+
           <PostMenu authorId={authorId} id={blogId} />
         </div>
       </section>
 
       {/* Title + Image */}
       <section className="mb-3">
-        <p className="text-sm font-semibold text-gray-800 mb-2 truncate w-full">{title}</p>
+        <p className="text-sm font-semibold text-gray-800 mb-2 truncate w-full">
+          {title}
+        </p>
         <img
           src={featuredImage}
           alt="Blog cover"
@@ -62,8 +70,12 @@ const Post = ({
 
       {/* Stats */}
       <section className="flex justify-between px-8 text-xs text-gray-600 mb-2">
-        <p><span className="font-bold">{likes}</span> Likes</p>
-        <p><span className="font-bold">{comments}</span> Comments</p>
+        <p>
+          <span className="font-bold">{likes}</span> Likes
+        </p>
+        <p>
+          <span className="font-bold">{comments}</span> Comments
+        </p>
       </section>
 
       {/* Actions */}

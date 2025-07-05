@@ -1,7 +1,7 @@
 import ProfileSection from "../components/Profile/ProfileSection";
 import { useGetAuthor } from "../hooks";
 import { RotateLoading } from "../components/Loading";
-// import ProfileBlog from "../components/Profile/ProfileBlog"; 
+// import ProfileBlog from "../components/Profile/ProfileBlog";
 import { useParams } from "react-router-dom";
 import Post from "../components/Profile/Post";
 
@@ -9,13 +9,13 @@ const Profile = () => {
   const { id } = useParams();
 
   const { error, loading, author } = useGetAuthor(id);
-  // console.log(author); 
+  // console.log(author);
 
   if (loading) return <RotateLoading />;
 
   if (error) {
     return (
-      <div className=" w-full flex items-center justify-center bg-black">
+      <div className="w-full flex items-center justify-center bg-black">
         <p className="text-red-300 font-semibold text-xl text-center px-4">
           {error.message || "Something went wrong."}
         </p>
@@ -27,7 +27,7 @@ const Profile = () => {
     <>
       <ProfileSection author={author} />
 
-      <div className="h-full w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 scale-93 gap-1 ">
+      <div className="h-full w-full grid grid-cols-1 md:grid-cols-2 scale-93 gap-4 justify-items-center">
         {author?.Blogs.map((blog) => (
           <Post
             authorBio={author.bio}
@@ -41,25 +41,11 @@ const Profile = () => {
             authorId={author.id}
             key={blog.id}
             blogId={blog.id}
+            badge="show"
           />
         ))}
       </div>
 
-      {/* <div className="h-full grid grid-cols-1 pt-15 pl-5 pr-5 sm:grid-cols-2 md:grid-cols-3">
-        {author?.Blogs?.map((blog) => (
-          <ProfileBlog
-            authorName={author.name}
-            content={blog.content}
-            title={blog.title}
-            id={blog.id}
-            key={blog.id}
-            authorId={author.id}
-            createdAt={blog.createdAt}
-            page="profile"
-            authorPic={author.profilePic}
-          />
-        ))}
-      </div> */}
     </>
   );
 };

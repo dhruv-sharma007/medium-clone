@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { signoutApi } from "../../lib/api";
 import { Link, useNavigate } from "react-router-dom";
 import { ProfilePicUrl } from "../../lib/static";
-// import type { IGetProfileResponse } from "@medium-clone/common"; 
+// import type { IGetProfileResponse } from "@medium-clone/common";
 import { useAuthStore } from "../../store/auth";
 import { useFollow } from "../../hooks";
 import type { IGetProfileResp } from "../../vite-env";
@@ -17,7 +17,7 @@ const ProfileSection = ({
 }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
-  // console.log("--------", author); 
+  // console.log("--------", author);
   const { createFollowHook, response, deleteFollowHook } = useFollow();
 
   const onFollow = async () => {
@@ -56,7 +56,7 @@ const ProfileSection = ({
 
   return (
     <>
-      <main className="pt-20 w-full max-w-5xl mx-auto px-4">
+      <main className="pt-5 w-full max-w-5xl mx-auto px-4">
         {/* Profile Header */}
         <section className="flex flex-col md:flex-row md:justify-between items-center gap-6 py-6 border-b">
           <div className="flex items-center gap-4 w-full md:w-auto">

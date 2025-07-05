@@ -1,72 +1,35 @@
-import React, { useRef, useState, type ChangeEvent } from "react";
 import ToggleButton from "../ui/ToggleButton";
 import { useNavigate } from "react-router-dom";
-import imageCompression from "browser-image-compression";
-import toast from "react-hot-toast";
-import { createBlog } from "../../lib/api";
+import type { ChangeEvent, FormEvent, MutableRefObject } from "react";
 
-const UploadPost = () => {
-  const defaultImage =
-    "https://www.eligocs.com/_next/static/media/empty.828db9a9.jpg";
+type UploadPostProps = {
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  imagePreview: string;
+  handleChangePhotoClick: () => void;
+  fileInputRef: MutableRefObject<HTMLInputElement | null>;
+  handleFileSelect: (e: ChangeEvent<HTMLInputElement>) => void;
+  title: string;
+  setTitle: (title: string) => void;
+  isChecked: boolean;
+  handleCheckboxChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  content: string;
+  setContent: (content: string) => void;
+};
+
+const UploadPost = ({
+  onSubmit,
+  imagePreview,
+  handleChangePhotoClick,
+  fileInputRef,
+  handleFileSelect,
+  title,
+  setTitle,
+  isChecked,
+  handleCheckboxChange,
+  content,
+  setContent,
+}: UploadPostProps) => {
   const navigate = useNavigate();
-  const [isChecked, setIsChecked] = useState(false);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [imagePreview, setImagePreview] = useState(defaultImage);
-  const [imageBase64, setImageBase64] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsChecked(e.target.checked);
-  };
-
-  const fileToBase64 = async (file: File): Promise<string> => {
-    const compressedFile = await imageCompression(file, {
-      maxSizeMB: 0.2,
-      maxWidthOrHeight: 600,
-      useWebWorker: true,
-    });
-    return await imageCompression.getDataUrlFromFile(compressedFile);
-  };
-
-  const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      const base64 = await fileToBase64(file);
-      setImageBase64(base64);
-      setImagePreview(base64);
-    } else {
-      alert("Please select a valid image file");
-    }
-  };
-
-  const handleChangePhotoClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (imagePreview === defaultImage) return alert("Please Choose an image.");
-
-    const postData = {
-      title,
-      content,
-      featuredImg: imageBase64,
-      isPublished: isChecked,
-    };
-
-    try {
-      const res = await createBlog(postData);
-
-      // const result = ;
-
-      navigate('/profile')
-      toast.success(res.data.message);
-    } catch (err) {
-      console.error("Error:", err);
-    }
-  };
 
   return (
     <form
@@ -115,13 +78,13 @@ const UploadPost = () => {
             className="w-full min-h-[200px] p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="Write your post content here..."
             required
-          ></textarea>
+          />
         </div>
 
         <div className="flex justify-end gap-4">
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             className="px-5 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all"
           >
             Cancel

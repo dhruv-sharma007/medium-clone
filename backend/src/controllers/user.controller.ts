@@ -185,9 +185,10 @@ const getAuthor = async (c: Context) => {
         const authorId = c.req.param("id");
         const currentUser = c.get("user");
 
-        if (currentUser.id.trim() === "" || !currentUser) {
+        // Validate current user
+        if (!currentUser || !currentUser.id?.trim()) {
             c.status(400);
-            return c.json(apiJson("incorrect user id", {}, false));
+            return c.json(apiJson("Invalid user ID", {}, false));
         }
 
         const prisma = getPrisma();
@@ -209,9 +210,7 @@ const getAuthor = async (c: Context) => {
                         },
                     },
                     Blogs: {
-                        orderBy: {
-                            createdAt: "desc",
-                        },
+                        orderBy: { createdAt: "desc" },
                         select: {
                             id: true,
                             title: true,
@@ -245,30 +244,32 @@ const getAuthor = async (c: Context) => {
             }),
         ]);
 
-        const { _count, ...user } = author!;
+        if (!author) {
+            c.status(404);
+            return c.json(apiJson("Author not found", {}, false));
+        }
+
+        const { _count, ...user } = author;
 
         c.status(200);
         return c.json(
-            apiJson(
-                "User found successfully",
-                {
-                    ...user,
-                    postCount: _count.Blogs,
-                    isFollowedByAuthor: !!isFollowedBy,
-                    isUserFollowing: !!isFollowing,
-                    followers: _count.followers,
-                    following: _count.following,
-                },
-                true,
-            ),
+            apiJson("User found successfully", {
+                ...user,
+                postCount: _count.Blogs,
+                isUserFollowing: Boolean(isFollowing),
+                isFollowedByAuthor: Boolean(isFollowedBy),
+                followers: _count.followers,
+                following: _count.following,
+            }, true)
         );
     } catch (error) {
         const err = error as Error;
+        console.error("getAuthor error:", err);
         c.status(500);
-        console.log(error);
-        return c.json(apiJson(err.message, {}, false));
+        return c.json(apiJson("Something went wrong", {}, false));
     }
 };
+
 
 // Delete Profile
 const deleteProfile = async (c: Context) => {

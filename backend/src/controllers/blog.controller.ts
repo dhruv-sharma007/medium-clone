@@ -163,6 +163,7 @@ const getBulkBlogs = async (c: Context) => {
     const prisma = getPrisma();
     const [posts, totalPosts] = await Promise.all([
       prisma.blog.findMany({
+        where: { isPublished: true},
         orderBy: { createdAt: "desc" },
         skip: (parseInt(page) - 1) * limit,
         take: limit,

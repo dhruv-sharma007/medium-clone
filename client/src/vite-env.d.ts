@@ -73,15 +73,15 @@ export type TGetBlogsResponse = {
 };
 
 export interface IGetProfileResp {
-    id: string;
-    name: string;
-    username: string;
-    profilePic: string;
-    bio: string;
-    followers: number;
-    following: number;
-    Blogs: POST[];
-    postCount: number;
-    isUserFollowing: boolean
-    isFollowedByAuthor: boolean
+  id: string;
+  name: string;
+  username: string;
+  profilePic: string;
+  bio: string;
+  followers: number;
+  following: number;
+  Blogs: POST[];
+  postCount: number;
+  isUserFollowing: boolean;
+  isFollowedByAuthor: boolean;
 }

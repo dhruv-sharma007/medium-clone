@@ -11,7 +11,7 @@
 
 // const BlogCard = ({ authorName, content, title, id }: IBlogcard) => {
 //   return (
-  
+
 //   );
 // };
 

@@ -17,6 +17,14 @@
   }
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
 .quote {
   font-family: "Edu NSW ACT Hand Pre";
   font-optical-sizing: auto;

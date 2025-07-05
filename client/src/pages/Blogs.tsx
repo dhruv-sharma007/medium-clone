@@ -16,22 +16,13 @@ const Blogs = () => {
           <RotateLoading />
         </div>
       ) : (
-        <div className="h-full w-full flex justify-center p-4">
-          <div className="grid grid-cols-1 pt-15 gap-5">
+        <div className="h-full w-full  flex justify-center p-4">
+          <div className="grid grid-cols-1 gap-5">
             {blogs?.posts
               .filter((blog) => blog.isPublished)
               .map((blog) => (
-                // <ProfileBlog
-                //   authorPic={blog.user.profilePic}
-                //   authorName={blog.user.name}
-                //   createdAt={blog.createdAt}
-                //   authorId={blog.user.id}
-                //   title={blog.title}
-                //   id={blog.id}
-                //   page="home"
-                //   key={blog.id}
-                // />
-                <div key={blog.id} className="scale-125 p-24">
+                
+                <div key={blog.id} className=" ">
                   <Post
                     authorBio={blog.user.bio}
                     authorName={blog.user.name}
@@ -42,7 +33,6 @@ const Blogs = () => {
                     title={blog.title}
                     authorId={blog.user.id}
                     blogId={blog.id}
-                    // isPublished={blog.isPublished} 
                   />
                 </div>
               ))}
