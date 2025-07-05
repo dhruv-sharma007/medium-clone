@@ -10,7 +10,7 @@ const Blogs = () => {
   const { blogs, loading } = useBlogs(page);
 
   return (
-    <div className="min-h-screen min-w-screen mt-4">
+    <div className="min-h-screen  mt-4">
       {loading ? (
         <div className="flex justify-center items-center min-h-screen">
           <RotateLoading />
@@ -37,9 +37,11 @@ const Blogs = () => {
                     authorName={blog.user.name}
                     comments={blog._count.comments}
                     likes={blog._count.likes}
-                    featuredImge={blog.featuredImg}
+                    featuredImage={blog.featuredImg}
                     profileImage={blog.user.profilePic}
                     title={blog.title}
+                    authorId={blog.user.id}
+                    blogId={blog.id}
                     // isPublished={blog.isPublished} 
                   />
                 </div>

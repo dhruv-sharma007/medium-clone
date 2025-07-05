@@ -5,6 +5,18 @@
   themes: silk --default, silk --prefersdark;
 }
 
+@layer components {
+  .sidebar-icon {
+    @apply cursor-pointer hover:border-r-8;
+  }
+  .profile-image {
+    @apply cursor-pointer hover:ring shadow-2xl rounded-full max-h-17 m-4;
+  }
+  .icon-badge{
+    @apply absolute top-4 left-14 -translate-x-1/2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out badge badge-ghost border-none rounded-sm bg-gray-500/45;
+  }
+}
+
 .quote {
   font-family: "Edu NSW ACT Hand Pre";
   font-optical-sizing: auto;
@@ -20,5 +32,11 @@
 }
 
 html {
-  scroll-behavior: smooth
+  /* scroll-behavior: smooth; */
+  height: 100%;
+}
+
+body,
+#root {
+  height: 100%;
 }

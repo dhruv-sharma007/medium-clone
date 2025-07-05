@@ -1,15 +1,23 @@
 import { Outlet } from "react-router-dom";
-import AppBar from "../components/AppBar";
+import SideBar from '../components/SideBar';
+
 
 const MainLayout = () => {
+
   return (
     <>
-      <div className=" fixed w-full z-50">
-        <AppBar />
+      <div className="flex h-screen overflow-hidden">
+
+        {/* Sidebar */}
+        <SideBar />
+
+        {/* Main content */}
+        <div className="flex-1 h-full overflow-y-auto">
+          <div className="p-4">
+            <Outlet />
+          </div>
+        </div>
       </div>
-      <main>
-        <Outlet />
-      </main>
     </>
   );
 };

@@ -123,7 +123,7 @@ const useDeleteBlog = () => {
 const useGetProfile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [profile, setProfile] = useState<IGetProfileResponse | null>(null);
+  const [profile, setProfile] = useState<IGetProfileResp>();
 
   useEffect(() => {
     let cancelled = false;

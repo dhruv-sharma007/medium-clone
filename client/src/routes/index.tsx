@@ -20,7 +20,7 @@ export const PublicRoutes: AppRoute[] = [
 
 export const ProtectedRoutes = [
   { path: "/blog-edit", element: EditProfile },
-  { path: "/create_post", element: CreatePost },
+  { path: "/create-post", element: CreatePost },
   { path: "/profile/:id", element: Profile },
   { path: "/profile-edit", element: EditProfile },
   { path: "/profile-settings", element: ProfileSettings },

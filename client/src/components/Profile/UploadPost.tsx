@@ -71,7 +71,7 @@ const UploadPost = () => {
   return (
     <form
       onSubmit={onSubmit}
-      className="mt-16 p-4 h-[92vh] flex justify-center items-center bg-gray-50"
+      className="p-4 h-[92vh] flex justify-center items-center bg-gray-50"
     >
       <section className="w-full max-w-xl rounded-2xl shadow-2xl bg-white p-6 space-y-6">
         <div className="flex gap-6">

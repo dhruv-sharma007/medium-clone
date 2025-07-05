@@ -15,7 +15,7 @@ const Profile = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-black">
+      <div className=" w-full flex items-center justify-center bg-black">
         <p className="text-red-300 font-semibold text-xl text-center px-4">
           {error.message || "Something went wrong."}
         </p>
@@ -27,19 +27,20 @@ const Profile = () => {
     <>
       <ProfileSection author={author} />
 
-      <div className="p-5 h-full w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 scale-93 gap-14 ">
+      <div className="h-full w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 scale-93 gap-1 ">
         {author?.Blogs.map((blog) => (
           <Post
             authorBio={author.bio}
             authorName={author.name}
             comments={blog._count.comments}
             likes={blog._count.likes}
-            featuredImge={blog.featuredImg}
+            featuredImage={blog.featuredImg}
             profileImage={author.profilePic}
             title={blog.title}
             isPublished={blog.isPublished}
             authorId={author.id}
             key={blog.id}
+            blogId={blog.id}
           />
         ))}
       </div>

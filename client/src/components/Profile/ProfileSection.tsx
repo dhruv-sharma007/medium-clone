@@ -17,10 +17,10 @@ const ProfileSection = ({
 }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
-  console.log("--------", author);
+  // console.log("--------", author); 
   const { createFollowHook, response, deleteFollowHook } = useFollow();
 
-  const onFollow = async (e: React.FormEvent) => {
+  const onFollow = async () => {
     try {
       // e.preventDefault()
       await createFollowHook(author?.id);
@@ -31,7 +31,7 @@ const ProfileSection = ({
       toast.error(error.message);
     }
   };
-  const onUnFollow = async (e: React.FormEvent) => {
+  const onUnFollow = async () => {
     try {
       // e.preventDefault()
       await deleteFollowHook(author?.id);
