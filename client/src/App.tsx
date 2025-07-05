@@ -1,6 +1,5 @@
 import { Toaster } from "react-hot-toast";
 import Routing from "./routes/Routing";
-import { useEffect } from "react";
 
 function App() {
   return (
