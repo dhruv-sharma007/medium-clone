@@ -84,7 +84,7 @@ const UploadPost = ({
         <div className="flex justify-end gap-4">
           <button
             type="button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)}
             className="px-5 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all"
           >
             Cancel
@@ -93,7 +93,7 @@ const UploadPost = ({
             type="submit"
             className="px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300 disabled:text-white transition-all"
           >
-            Save Changes
+            Upload
           </button>
         </div>
       </section>

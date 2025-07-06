@@ -85,3 +85,35 @@ export interface IGetProfileResp {
   isUserFollowing: boolean;
   isFollowedByAuthor: boolean;
 }
+
+// Define the shape of a Blog object returned from the backend
+export interface IBlogUser {
+  id: string;
+  name: string;
+  username: string;
+  bio?: string | null;
+  profilePic?: string | null;
+}
+
+export interface IBlogCount {
+  likes: number;
+  comments: number;
+}
+
+export interface IPost {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;            
+  featuredImg?: string | null;
+  likes: any[];               
+  comments: any[];             
+  _count: IBlogCount;
+  user: IBlogUser;
+}
+
+export interface IBLOGRESPONSE {
+  data: IPost;
+  message: string;
+  success: boolean
+}

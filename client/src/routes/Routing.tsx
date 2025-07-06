@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ProtectedRoute, AuthRoute } from "../components/ProtectedRoute";
 import { AuthRoutes, ProtectedRoutes, PublicRoutes } from ".";
-import MainLayout from "../pages/MainLayout";
+import MainLayout from "../components/MainLayout";
 
 const Routing = () => {
   return (

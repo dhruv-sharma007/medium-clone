@@ -27,7 +27,7 @@ user.get("/me", userAuth, getProfile);
 user.delete("/me", userAuth, deleteProfile);
 user.get("/username-check/:username", isUsernameAvailable);
 user.post("/update-profile", userAuth, editProfile);
-user.get("/getAuthor/:id", userAuth, getAuthor);
+user.get("/getAuthor/:username", userAuth, getAuthor);
 
 user.get("/follow/:authorId", userAuth, createFollow);
 user.delete("/follow/:authorId", userAuth, deleteFollow);

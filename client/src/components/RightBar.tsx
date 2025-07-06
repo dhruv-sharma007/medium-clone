@@ -1,15 +1,15 @@
-import Search from './ui/Search';
+import { useLocation } from "react-router-dom";
+import Search from "./ui/Search";
 
 const RightBar = () => {
-    return (
-        <div className='w-full min-h-full border-l-[0.1px] border-l-gray-700'>
-            <section className='flex justify-center p-4 min-h-20'>
-                <Search />
-            </section>
+  const location = useLocation()
+  return (
+    <div className="w-full min-h-full border-l-[0.1px] border-l-gray-700">
+      <section className="flex justify-center p-4 min-h-20">
+        {location.pathname === '/search' ? "" : <Search />}
+      </section>
+    </div>
+  );
+};
 
-
-        </div>
-    )
-}
-
-export default RightBar
+export default RightBar;

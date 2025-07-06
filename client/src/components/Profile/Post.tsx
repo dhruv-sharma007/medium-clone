@@ -3,6 +3,7 @@ import { MdOutlineInsertComment } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Published from "../ui/Published";
 import PostMenu from "../PostMenu";
+import { useAuthStore } from "../../store/auth";
 
 interface PostProps {
   profileImage: string;
@@ -12,10 +13,10 @@ interface PostProps {
   featuredImage: string;
   likes: number;
   comments: number;
-  isPublished: boolean | null;
-  authorId: string;
+  isPublished: boolean;
+  authorUsername: string;
   blogId: string;
-  badge: 'show' | 'hide'
+  badge: "show" | "hide";
 }
 
 const Post = ({
@@ -26,16 +27,17 @@ const Post = ({
   featuredImage,
   likes,
   comments,
-  isPublished = null,
-  authorId,
+  isPublished,
+  authorUsername,
   blogId,
-  badge
+  badge,
 }: PostProps) => {
+  const { user } = useAuthStore()
   return (
     <div className="min-w-120 max-w-150 max-h-188 rounded-xl p-4 bg-white shadow-md transition hover:shadow-lg">
       {/* Author Info */}
       <section className="flex justify-between items-start mb-3">
-        <Link to={`/profile/${authorId}`} className="flex gap-3 items-center">
+        <Link to={`/profile/${authorUsername}`} className="flex gap-3 items-center">
           <img
             src={profileImage}
             alt={`${authorName}'s profile`}
@@ -50,25 +52,35 @@ const Post = ({
         </Link>
         <div className="flex items-center gap-2">
 
-          {badge === 'show' ? isPublished ? <Published isPublished={true} /> : <Published isPublished={false} /> : <></>}
+          {user?.username === authorUsername ? badge === "show" ? (
+            isPublished ? (
+              <Published isPublished={true} />
+            ) : (
+              <Published isPublished={false} />
+            )
+          ) : (
+            <></>
+          ) : ''}
 
-          <PostMenu authorId={authorId} id={blogId} />
+          <PostMenu authorId={authorUsername} id={blogId} pubValue={isPublished} />
         </div>
       </section>
 
       {/* Title + Image */}
-      <section className="mb-3">
-        <p className="text-sm font-semibold text-gray-800 mb-2 truncate w-full">
-          {title}
-        </p>
-        <img
-          src={featuredImage}
-          alt="Blog cover"
-          className="w-full h-140 object-cover rounded-lg bg-gray-200"
-        />
-      </section>
-
+      <Link to={`/blog/${blogId}`}>
+        <section className="mb-3">
+          <p className="text-sm font-semibold text-gray-800 mb-2 truncate w-full">
+            {title}
+          </p>
+          <img
+            src={featuredImage}
+            alt="Blog cover"
+            className="w-full h-140 object-cover rounded-lg bg-gray-200"
+          />
+        </section>
+      </Link>
       {/* Stats */}
+      
       <section className="flex justify-between px-8 text-xs text-gray-600 mb-2">
         <p>
           <span className="font-bold">{likes}</span> Likes

@@ -1,44 +1,49 @@
-// import BlogCard from "../components/BlogCard";
-import { useBlogs } from "../hooks";
-import { RotateLoading } from "../components/Loading";
-// import ProfileBlog from "../components/Profile/ProfileBlog";
-import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useGetPosts } from "../hooks";
 import Post from "../components/Profile/Post";
+import { RotateLoading } from "../components/Loading";
 
 const Blogs = () => {
-  const [page, _] = useState<number>(1);
-  const { blogs, loading } = useBlogs(page);
+  const { blogs, fetchPost, hasMore } = useGetPosts();
 
   return (
-    <div className="min-h-screen  mt-4">
-      {loading ? (
-        <div className="flex justify-center items-center min-h-screen">
-          <RotateLoading />
-        </div>
-      ) : (
-        <div className="h-full w-full  flex justify-center p-4">
-          <div className="grid grid-cols-1 gap-5">
-            {blogs?.posts
-              .filter((blog) => blog.isPublished)
-              .map((blog) => (
-                
-                <div key={blog.id} className=" ">
-                  <Post
-                    authorBio={blog.user.bio}
-                    authorName={blog.user.name}
-                    comments={blog._count.comments}
-                    likes={blog._count.likes}
-                    featuredImage={blog.featuredImg}
-                    profileImage={blog.user.profilePic}
-                    title={blog.title}
-                    authorId={blog.user.id}
-                    blogId={blog.id}
-                  />
-                </div>
-              ))}
+    <div className="min-h-full mt-4 px-4 flex justify-center">
+      <InfiniteScroll
+        dataLength={blogs.length}
+        next={fetchPost}
+        hasMore={hasMore}
+        loader={
+          <div className="flex justify-center p-10 min-h-full">
+            <RotateLoading />
           </div>
+        }
+        endMessage={
+          <p className="text-center text-gray-500 py-4">
+            No more posts to load.
+          </p>
+        }
+      >
+        <div className="grid grid-cols-1 gap-5">
+          {blogs
+            .filter((blog) => blog.isPublished)
+            .map((blog) => (
+              <Post
+                key={blog.id}
+                authorBio={blog.user.bio}
+                authorName={blog.user.name}
+                comments={blog._count.comments}
+                likes={blog._count.likes}
+                featuredImage={blog.featuredImg}
+                profileImage={blog.user.profilePic}
+                title={blog.title}
+                authorUsername={blog.user.username}
+                blogId={blog.id}
+                badge="hide"
+                isPublished
+              />
+            ))}
         </div>
-      )}
+      </InfiniteScroll>
     </div>
   );
 };

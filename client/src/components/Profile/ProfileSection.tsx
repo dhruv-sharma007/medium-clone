@@ -65,7 +65,7 @@ const ProfileSection = ({
               size={80}
               font_Size={35}
               name={author?.name}
-              id={author?.id}
+              id={author?.username}
             />
             <div>
               <h1 className="text-2xl font-bold text-gray-800">

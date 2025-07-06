@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import imageCompression from "browser-image-compression";
 import toast from "react-hot-toast";
 import { createBlog } from "../lib/api";
+import { useAuthStore } from "../store/auth";
 
 const CreatePost = () => {
   const defaultImage =
@@ -19,6 +20,8 @@ const CreatePost = () => {
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
   };
+
+  const {user} = useAuthStore()
 
   const fileToBase64 = async (file: File): Promise<string> => {
     const compressedFile = await imageCompression(file, {
@@ -61,7 +64,7 @@ const CreatePost = () => {
 
       // const result = ;
 
-      navigate("/profile");
+      navigate(`/profile/${user?.username}`);
       toast.success(res.data.message);
     } catch (err) {
       console.error("Error:", err);
@@ -71,17 +74,17 @@ const CreatePost = () => {
   return (
     <>
       <UploadPost
-      content={content} 
-      fileInputRef={fileInputRef}
-      handleChangePhotoClick={handleChangePhotoClick}
-      handleCheckboxChange={handleCheckboxChange}
-      handleFileSelect={handleFileSelect}
-      imagePreview={imagePreview}
-      isChecked={isChecked}
-      onSubmit={onSubmit}
-      setContent={setContent}
-      setTitle={setTitle}
-      title={title}
+        content={content}
+        fileInputRef={fileInputRef}
+        handleChangePhotoClick={handleChangePhotoClick}
+        handleCheckboxChange={handleCheckboxChange}
+        handleFileSelect={handleFileSelect}
+        imagePreview={imagePreview}
+        isChecked={isChecked}
+        onSubmit={onSubmit}
+        setContent={setContent}
+        setTitle={setTitle}
+        title={title}
       />
     </>
   );

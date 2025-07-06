@@ -7,6 +7,7 @@ import CreatePost from "../pages/CreatePost";
 import Profile from "../pages/Profile";
 import EditProfile from "../pages/EditProfile";
 import ProfileSettings from "../pages/ProfileSettings";
+import SearchPage from "../pages/SearchPage";
 
 export interface AppRoute {
   path: string;
@@ -21,9 +22,10 @@ export const PublicRoutes: AppRoute[] = [
 export const ProtectedRoutes = [
   { path: "/blog-edit", element: EditProfile },
   { path: "/create-post", element: CreatePost },
-  { path: "/profile/:id", element: Profile },
+  { path: "/profile/:username", element: Profile },
   { path: "/profile-edit", element: EditProfile },
   { path: "/profile-settings", element: ProfileSettings },
+  { path: "/search", element: SearchPage },
 ];
 
 export const AuthRoutes: AppRoute[] = [

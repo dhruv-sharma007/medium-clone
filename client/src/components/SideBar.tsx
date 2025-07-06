@@ -9,10 +9,10 @@ const SideBar = () => {
   const location = useLocation();
   const { user } = useAuthStore();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <aside className="w-50 bg-black text-white hidden md:block relative border-r-[0.1px] border-stone-700">
+    <aside>
       {/* Logo */}
       <Link to="/">
         <div className="flex justify-end items-center pr-10 pt-5">
@@ -30,13 +30,19 @@ const SideBar = () => {
         </Link>
 
         {/* Profile */}
-        <Link to={`/profile/${user?.id}`} className="flex items-center">
+        <Link to={`/profile/${user?.username}`} className="flex items-center">
           <FaUserAlt
             className={`sidebar-icon pr-[2px] ${location.pathname.startsWith("/profile") ? "text-white border-r-7" : "text-gray-500"}`}
           />
         </Link>
 
-        <IoIosSearch className="sidebar-icon text-gray-500" />
+
+        <Link to={"/search"}>
+
+          <IoIosSearch
+            className={`sidebar-icon text-gray-500 ${location.pathname.startsWith("/search") ? "text-white border-r-7" : "text-gray-500"}`}
+          />
+        </Link>
         <Link to={"/create-post"}>
           <MdOutlineAddCircleOutline
             className={`sidebar-icon pr-[2px] ${location.pathname.startsWith("/create-post") ? "text-white border-r-7" : "text-gray-500"}`}

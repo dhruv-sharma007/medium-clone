@@ -116,6 +116,8 @@ const getBlog = async (c: Context) => {
         content: true,
         createdAt: true,
         featuredImg: true,
+        likes: true,
+        comments: true,
         _count: {
           select: {
             comments: true,
@@ -163,7 +165,7 @@ const getBulkBlogs = async (c: Context) => {
     const prisma = getPrisma();
     const [posts, totalPosts] = await Promise.all([
       prisma.blog.findMany({
-        where: { isPublished: true},
+        where: { isPublished: true },
         orderBy: { createdAt: "desc" },
         skip: (parseInt(page) - 1) * limit,
         take: limit,
@@ -194,9 +196,14 @@ const getBulkBlogs = async (c: Context) => {
       prisma.blog.count(),
     ]);
 
+    const hasMore = parseInt(page) * limit < totalPosts;
     c.status(200);
     return c.json(
-      apiJson("Blogs fetched successfully", { posts, totalPosts }, true),
+      apiJson(
+        "Blogs fetched successfully",
+        { posts, totalPosts, hasMore },
+        true,
+      ),
     );
   } catch (error: any) {
     c.status(500);
@@ -237,4 +244,46 @@ const deleteBlog = async (c: Context) => {
   }
 };
 
-export { postBlog, updateBlog, getBlog, getBulkBlogs, deleteBlog };
+const changePublish = async (c: Context) => {
+  try {
+    const { postId, v } = await c.req.json();
+
+    console.log(postId, v);
+
+
+    const post = await getPrisma().blog.findUnique({ where: { id: postId } })
+
+    await getPrisma().blog.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        isPublished: !post?.isPublished,
+      },
+    });
+    c.status(200);
+    return c.json(apiJson("Blog updated successfully", {}, true));
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      c.status(404);
+      return c.json(apiJson("Blog not found", {}, false));
+    }
+
+    const err = error as Error;
+    console.log(err);
+    c.status(500);
+    return c.json(apiJson(err.message, {}, false));
+  }
+};
+
+export {
+  postBlog,
+  updateBlog,
+  getBlog,
+  getBulkBlogs,
+  deleteBlog,
+  changePublish,
+};

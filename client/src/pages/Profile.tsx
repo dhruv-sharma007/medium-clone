@@ -6,9 +6,9 @@ import { useParams } from "react-router-dom";
 import Post from "../components/Profile/Post";
 
 const Profile = () => {
-  const { id } = useParams();
+  const { username } = useParams();
 
-  const { error, loading, author } = useGetAuthor(id);
+  const { error, loading, author } = useGetAuthor(username);
   // console.log(author);
 
   if (loading) return <RotateLoading />;
@@ -27,7 +27,7 @@ const Profile = () => {
     <>
       <ProfileSection author={author} />
 
-      <div className="h-full w-full grid grid-cols-1 md:grid-cols-2 scale-93 gap-4 justify-items-center">
+      <div className="h-full w-full grid grid-cols-1 lg:grid-cols-2 scale-93 gap-4 justify-items-center">
         {author?.Blogs.map((blog) => (
           <Post
             authorBio={author.bio}
@@ -38,14 +38,13 @@ const Profile = () => {
             profileImage={author.profilePic}
             title={blog.title}
             isPublished={blog.isPublished}
-            authorId={author.id}
+            authorUsername={author.username}
             key={blog.id}
             blogId={blog.id}
             badge="show"
           />
         ))}
       </div>
-
     </>
   );
 };

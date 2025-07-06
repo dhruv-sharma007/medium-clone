@@ -1,15 +1,31 @@
-import { CiEdit, CiMenuKebab, CiShare1 } from "react-icons/ci";
+import { CiMenuKebab, CiShare1 } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { useAuthStore } from "../store/auth";
 import { useNavigate } from "react-router-dom";
-import { useDeleteBlog } from "../hooks";
+import { useDeleteBlog, usePublishChange } from "../hooks";
+import { FaExchangeAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
-const PostMenu = ({ authorId, id }: { authorId: string; id: string }) => {
+const PostMenu = ({ authorId, id, pubValue }: { authorId: string; id: string; pubValue: boolean; }) => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const [publishValue, setPublishValue] = useState<boolean>(pubValue)
   const { deleteBlogHook, error, response } = useDeleteBlog();
   // const copyLink = useRef(`${window.location.origin}/blog/${id}`);
+  const { changePublishHook, response: usePublishChangeResponse } = usePublishChange(id, publishValue)
+
+  const onPublishChange = async () => {
+    try {
+      setPublishValue(!publishValue)
+      await changePublishHook()
+      toast.success(usePublishChangeResponse?.message || 'updated successfully')
+      window.location.reload()
+    } catch (err) {
+      const error = err as Error
+      toast.error(String(error?.message))
+    }
+  }
 
   const onDelete = async () => {
     try {
@@ -52,7 +68,7 @@ const PostMenu = ({ authorId, id }: { authorId: string; id: string }) => {
           className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
         >
           {/* delete button  */}
-          {authorId === user?.id && (
+          {authorId === user?.username && (
             <li>
               <button onClick={onDelete} className=" flex justify-between">
                 <p>Delete</p>
@@ -76,12 +92,12 @@ const PostMenu = ({ authorId, id }: { authorId: string; id: string }) => {
           {/* copy sharable link ends */}
 
           {/* Edit post  */}
-          {user?.id === authorId && (
+          {user?.username === authorId && (
             <li>
-              <a className=" flex justify-between">
-                <p>Edit Post</p>
+              <a className=" flex justify-between" onClick={onPublishChange}>
+                <p>Make {publishValue ? 'Unpublish' : 'Publish'} </p>
                 <span className="text-2xl text-gray-500 cursor-pointer">
-                  <CiEdit />
+                  <FaExchangeAlt />
                 </span>
               </a>
             </li>

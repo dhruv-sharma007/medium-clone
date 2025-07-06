@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import {
+  changePublish,
   checkUsername,
   createBlog,
   deleteBlog,
@@ -12,44 +13,39 @@ import {
 import type {
   apiResponse,
   CreateBlogInput,
-  IGetProfileResponse,
+  // IGetProfileResponse,
 } from "@medium-clone/common";
 import { createFollow } from "../lib/api";
-import type { IGetProfileResp, POST } from "../vite-env";
+import type { IGetProfileResp, IPost, POST } from "../vite-env";
 
 // --------- useBlogs ---------
-const useBlogs = (page: number | undefined) => {
-  const [loading, setLoading] = useState(true);
-  const [blogs, setBlogs] = useState<{ posts: POST[]; totalPosts: number }>();
-  const [error, setError] = useState<Error | null>(null);
+
+export const useGetPosts = () => {
+  const [blogs, setBlogs] = useState<POST[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchPost = async () => {
+    const res = await getBlogs(page);
+    const newPosts = res.data.data.posts;
+    const total = res.data.data.totalPosts;
+
+    setBlogs((prev) => [...prev, ...newPosts]);
+    setHasMore(page * 12 < total);
+    setPage((prev) => prev + 1);
+  };
 
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    getBlogs(page)
-      .then((res) => {
-        // console.log(res);
+    fetchPost();
+  });
 
-        if (!cancelled) setBlogs(res.data.data);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err as Error);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [page]);
-
-  return { loading, blogs, error };
+  return { blogs, fetchPost, hasMore };
 };
 
 // --------- useBlog ---------
 const useBlog = (id: string) => {
   const [loading, setLoading] = useState(false);
-  const [blog, setBlog] = useState<IBlog | null>(null);
+  const [blog, setBlog] = useState<IPost>();
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -232,7 +228,7 @@ export interface IBlog {
   user: Author;
 }
 
-const useGetAuthor = (id: string | undefined) => {
+const useGetAuthor = (username: string | undefined) => {
   const [loading, setLoading] = useState<boolean>();
   const [author, setAuthor] = useState<IGetProfileResp>();
   const [error, setError] = useState<Error | null>(null);
@@ -240,7 +236,7 @@ const useGetAuthor = (id: string | undefined) => {
 
   useEffect(() => {
     setLoading(true);
-    getAuthor(id || "")
+    getAuthor(username || "")
       .then((res) => {
         console.log(res.data);
 
@@ -250,7 +246,7 @@ const useGetAuthor = (id: string | undefined) => {
         setError(e);
       })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [username]);
   return { loading, author, error };
 };
 
@@ -290,8 +286,32 @@ const useFollow = () => {
   return { loading, error, response, createFollowHook, deleteFollowHook };
 };
 
+const usePublishChange = (postId: string, v: boolean) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [response, setResponse] = useState<apiResponse | any>();
+
+
+  const changePublishHook = async () => {
+    try {
+      setLoading(true)
+      const res = await changePublish(postId, v)
+      console.log(res);
+      
+      setResponse(res.data)
+    } catch (err) {
+      const error = err as Error
+      setError(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+  return { changePublishHook, error, loading, response }
+}
+
 export {
-  useBlogs,
+  // useBlogs,
+  usePublishChange,
   useBlog,
   usePostBlog,
   useDeleteBlog,
