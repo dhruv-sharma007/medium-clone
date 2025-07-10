@@ -1,11 +1,11 @@
-import Search from '../components/ui/Search';
+import Search from "../components/ui/Search";
 
 const SearchPage = () => {
-    return (
-        <div className=' flex justify-center'>
-            <Search />
-        </div>
-    )
-}
+  return (
+    <div className=" flex justify-center">
+      <Search />
+    </div>
+  );
+};
 
-export default SearchPage
+export default SearchPage;

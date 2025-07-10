@@ -21,7 +21,7 @@ const CreatePost = () => {
     setIsChecked(e.target.checked);
   };
 
-  const {user} = useAuthStore()
+  const { user } = useAuthStore();
 
   const fileToBase64 = async (file: File): Promise<string> => {
     const compressedFile = await imageCompression(file, {

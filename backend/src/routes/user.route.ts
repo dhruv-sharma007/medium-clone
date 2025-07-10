@@ -3,7 +3,6 @@ import {
   deleteProfile,
   editProfile,
   getAuthor,
-  getProfile,
   isUsernameAvailable,
   userSignin,
   userSignOut,
@@ -23,7 +22,6 @@ const user = new Hono<{
 user.post("/signup", userSignUp);
 user.post("/signin", userSignin);
 user.get("/signout", userSignOut);
-user.get("/me", userAuth, getProfile);
 user.delete("/me", userAuth, deleteProfile);
 user.get("/username-check/:username", isUsernameAvailable);
 user.post("/update-profile", userAuth, editProfile);

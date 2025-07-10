@@ -6,26 +6,45 @@ import { useDeleteBlog, usePublishChange } from "../hooks";
 import { FaExchangeAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { useAuthorProfileStore } from "../store/author";
 
-const PostMenu = ({ authorId, id, pubValue }: { authorId: string; id: string; pubValue: boolean; }) => {
+const PostMenu = ({
+  authorId,
+  id,
+  pubValue,
+}: {
+  authorId: string;
+  id: string;
+  pubValue: boolean;
+}) => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [publishValue, setPublishValue] = useState<boolean>(pubValue)
+  const [publishValue, setPublishValue] = useState<boolean>(pubValue);
   const { deleteBlogHook, error, response } = useDeleteBlog();
   // const copyLink = useRef(`${window.location.origin}/blog/${id}`);
-  const { changePublishHook, response: usePublishChangeResponse } = usePublishChange(id, publishValue)
+  const { changePublishHook, response: usePublishChangeResponse } =
+    usePublishChange(id, publishValue);
+
+  const { updateBlogPublishStatus, authorProfile } = useAuthorProfileStore()
 
   const onPublishChange = async () => {
     try {
-      setPublishValue(!publishValue)
-      await changePublishHook()
-      toast.success(usePublishChangeResponse?.message || 'updated successfully')
-      window.location.reload()
+      setPublishValue((prev) => !prev);
+      await changePublishHook();
+      if (usePublishChangeResponse?.success) {
+        updateBlogPublishStatus(id, publishValue)
+      }
+      toast.success(
+        usePublishChangeResponse?.message || 'changed status of publish',
+      );
+      console.log(authorProfile);
+
+      // window.location.reload(); 
     } catch (err) {
-      const error = err as Error
-      toast.error(String(error?.message))
+      const error = err as Error;
+      toast.error(String(error?.message));
     }
-  }
+  };
 
   const onDelete = async () => {
     try {
@@ -95,7 +114,7 @@ const PostMenu = ({ authorId, id, pubValue }: { authorId: string; id: string; pu
           {user?.username === authorId && (
             <li>
               <a className=" flex justify-between" onClick={onPublishChange}>
-                <p>Make {publishValue ? 'Unpublish' : 'Publish'} </p>
+                <p>Make {publishValue ? "Unpublish" : "Publish"} </p>
                 <span className="text-2xl text-gray-500 cursor-pointer">
                   <FaExchangeAlt />
                 </span>

@@ -97,3 +97,11 @@ export const createFollow = async (authorId: string) => {
   return await api.get<apiResponse>(`/user/follow/${authorId}`);
 };
 
+//*********** Like unlike ***********//
+
+export const createLike = async (data: { userId: string; postId: string }) => {
+  return await api.post<apiResponse>(`/blog/like-blog`, data);
+};
+export const unlike = async (data: { userId: string; postId: string }) => {
+  return await api.post<apiResponse>(`/blog/like-blog`, data);
+};

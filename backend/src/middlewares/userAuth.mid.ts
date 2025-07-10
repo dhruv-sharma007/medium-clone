@@ -27,3 +27,29 @@ export const userAuth = async (c: Context, next: Next) => {
     return c.json({ message: "Unauthorized - Invalid token" }, 403);
   }
 };
+
+export const getBlogsMid = async (c: Context, next: Next) => {
+  const token = getCookie(c, "token");
+
+  if (!token) {
+    return await next();
+  }
+
+  try {
+    const payload = (await verify(token, process.env.JWT_SECRET!, "HS256")) as {
+      id: number;
+      name: string;
+      username: string;
+    };
+
+    c.set("user", {
+      id: payload.id,
+      name: payload.name,
+      username: payload.username,
+    });
+
+    return await next();
+  } catch (err) {
+    return c.json({ message: "Unauthorized - Invalid token" }, 403);
+  }
+};

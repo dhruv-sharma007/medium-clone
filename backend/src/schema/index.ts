@@ -13,3 +13,9 @@ export const ZCreateBlog = z.object({
   ),
   isPublished: z.boolean(),
 });
+
+export const ZCreateComment = z.object({
+  content: z.string({ message: "provide user id" }).min(5),
+  blogid: z.string({ message: "provide user id" }),
+  userId: z.string({ message: "provide user id" }),
+});

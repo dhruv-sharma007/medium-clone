@@ -3,6 +3,7 @@ import {
   changePublish,
   checkUsername,
   createBlog,
+  createLike,
   deleteBlog,
   deleteFollow,
   getAuthor,
@@ -17,20 +18,24 @@ import type {
 } from "@medium-clone/common";
 import { createFollow } from "../lib/api";
 import type { IGetProfileResp, IPost, POST } from "../vite-env";
+import { usePostStore } from "../store/post";
+import { useAuthorProfileStore } from "../store/author";
+import toast from "react-hot-toast";
 
 // --------- useBlogs ---------
 
 export const useGetPosts = () => {
-  const [blogs, setBlogs] = useState<POST[]>([]);
+  // const [blogs, setBlogs] = useState<POST[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const { addPosts, posts: blogs } = usePostStore();
 
   const fetchPost = async () => {
     const res = await getBlogs(page);
     const newPosts = res.data.data.posts;
     const total = res.data.data.totalPosts;
 
-    setBlogs((prev) => [...prev, ...newPosts]);
+    addPosts(newPosts);
     setHasMore(page * 12 < total);
     setPage((prev) => prev + 1);
   };
@@ -230,24 +235,21 @@ export interface IBlog {
 
 const useGetAuthor = (username: string | undefined) => {
   const [loading, setLoading] = useState<boolean>();
-  const [author, setAuthor] = useState<IGetProfileResp>();
   const [error, setError] = useState<Error | null>(null);
-  // const [type, setType] = useState<"signing" | "signup" >(null)
+  const { setProfile, authorProfile } = useAuthorProfileStore()
 
   useEffect(() => {
     setLoading(true);
     getAuthor(username || "")
       .then((res) => {
-        console.log(res.data);
-
-        setAuthor(res.data.data);
+        setProfile(res.data.data);
       })
       .catch((e) => {
         setError(e);
       })
       .finally(() => setLoading(false));
-  }, [username]);
-  return { loading, author, error };
+  }, [setProfile, username]);
+  return { loading, author: authorProfile, error };
 };
 
 const useFollow = () => {
@@ -289,25 +291,59 @@ const useFollow = () => {
 const usePublishChange = (postId: string, v: boolean) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [response, setResponse] = useState<apiResponse | any>();
-
+  const [response, setResponse] = useState<apiResponse>();
 
   const changePublishHook = async () => {
     try {
-      setLoading(true)
-      const res = await changePublish(postId, v)
+      setLoading(true);
+      const res = await changePublish(postId, v);
       console.log(res);
-      
-      setResponse(res.data)
+
+      setResponse(res.data);
     } catch (err) {
-      const error = err as Error
-      setError(error)
+      const error = err as Error;
+      setError(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-  return { changePublishHook, error, loading, response }
-}
+  };
+  return { changePublishHook, error, loading, response };
+};
+
+
+const useLike = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [response, setResponse] = useState<apiResponse>();
+
+  const createLikeHook = async (postId: string, userId: string) => {
+    try {
+      setLoading(true);
+      const res = await createLike({ postId, userId });
+      console.log(res);
+      setResponse(res.data);
+      toast.success(response?.message || 'Post liked')
+    } catch (err) {
+      const error = err as Error;
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const deleteLikeHook = async (postId: string, userId: string) => {
+    try {
+      setLoading(true);
+      const res = await createLike({ postId, userId });
+      setResponse(res.data);
+    } catch (err) {
+      const error = err as Error;
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return { createLikeHook, deleteLikeHook, error, loading, response };
+};
 
 export {
   // useBlogs,
@@ -319,4 +355,5 @@ export {
   useCheckUsername,
   useGetAuthor,
   useFollow,
+  useLike
 };

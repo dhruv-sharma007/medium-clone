@@ -1,29 +1,35 @@
-import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom';
-import { format } from 'date-fns'
-import { RotateLoading } from '../components/Loading'
-import { getBlog } from '../lib/api'
-import { FaHeart, FaComment } from 'react-icons/fa'
-import type { IPost } from '../vite-env';
-import { ProfilePicUrl } from '../lib/static';
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { format } from "date-fns";
+import { RotateLoading } from "../components/Loading";
+import { getBlog } from "../lib/api";
+import { FaHeart, FaComment } from "react-icons/fa";
+import type { IPost } from "../vite-env";
+import { ProfilePicUrl } from "../lib/static";
 
 const Blog = () => {
-  const { id } = useParams()
-  const [loading, setLoading] = useState(true)
-  const [blog, setBlog] = useState<IPost>()
-  const [error, setError] = useState('')
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [blog, setBlog] = useState<IPost>();
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!id) return
+    if (!id) return;
     getBlog(id)
-      .then(res => setBlog(res.data.data))
-      .catch(e => setError('Unable to load blog.' + e))
-      .finally(() => setLoading(false))
-  }, [id])
+      .then((res) => setBlog(res.data.data))
+      .catch((e) => setError("Unable to load blog." + e))
+      .finally(() => setLoading(false));
+  }, [id]);
 
-  if (loading) return <div className="flex justify-center items-center h-96"><RotateLoading /></div>
-  if (error) return <div className="text-red-500 text-center mt-10">{error}</div>
-  if (!blog) return null
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <RotateLoading />
+      </div>
+    );
+  if (error)
+    return <div className="text-red-500 text-center mt-10">{error}</div>;
+  if (!blog) return null;
 
   return (
     <article className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
@@ -44,10 +50,12 @@ const Blog = () => {
               className="w-14 h-14 object-cover rounded-full mr-2"
             />
           </Link>
-          <span>By <strong>{blog.user.name}</strong> (@{blog.user.username})</span>
+          <span>
+            By <strong>{blog.user.name}</strong> (@{blog.user.username})
+          </span>
           <span className="mx-2">•</span>
           <time dateTime={blog.createdAt}>
-            {format(new Date(blog.createdAt), 'MMM dd, yyyy')}
+            {format(new Date(blog.createdAt), "MMM dd, yyyy")}
           </time>
         </div>
       </header>
@@ -72,7 +80,7 @@ const Blog = () => {
         </Link>
       </footer>
     </article>
-  )
-}
+  );
+};
 
-export default Blog
+export default Blog;

@@ -3,7 +3,7 @@ import { Context } from "hono";
 import { getPrisma } from "../lib/db";
 import { apiJson } from "../utils/ApiResponse";
 import { Prisma } from "@prisma/client";
-import { ZCreateBlog } from "../schema";
+import { ZCreateBlog } from "../schema/index";
 import { imagekit } from "../utils/fileUpload";
 
 // POST: Create a blog
@@ -116,8 +116,6 @@ const getBlog = async (c: Context) => {
         content: true,
         createdAt: true,
         featuredImg: true,
-        likes: true,
-        comments: true,
         _count: {
           select: {
             comments: true,
@@ -153,16 +151,18 @@ const getBlog = async (c: Context) => {
 // GET: Get all blogs
 
 // TODO: ADD pagination <-----------
-
 const getBulkBlogs = async (c: Context) => {
   const page = c.req.query("p");
   if (!page || page.trim() === "") {
     c.status(400);
     return c.json(apiJson("Please provide valid argument", {}, false));
   }
+
   const limit = 12;
   try {
     const prisma = getPrisma();
+    const userId = c?.get("user")?.id || "";
+
     const [posts, totalPosts] = await Promise.all([
       prisma.blog.findMany({
         where: { isPublished: true },
@@ -191,21 +191,37 @@ const getBulkBlogs = async (c: Context) => {
               bio: true,
             },
           },
+          likes: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              id: true,
+            },
+          },
         },
       }),
       prisma.blog.count(),
     ]);
+
+    const formattedPosts = posts.map((post) => ({
+      ...post,
+      isLikedByUser: post.likes.length > 0,
+      likes: undefined, // remove likes array
+    }));
 
     const hasMore = parseInt(page) * limit < totalPosts;
     c.status(200);
     return c.json(
       apiJson(
         "Blogs fetched successfully",
-        { posts, totalPosts, hasMore },
+        { posts: formattedPosts, totalPosts, hasMore },
         true,
       ),
     );
   } catch (error: any) {
+    console.log(error);
+
     c.status(500);
     return c.json(apiJson(error.message, {}, false));
   }
@@ -250,8 +266,7 @@ const changePublish = async (c: Context) => {
 
     console.log(postId, v);
 
-
-    const post = await getPrisma().blog.findUnique({ where: { id: postId } })
+    const post = await getPrisma().blog.findUnique({ where: { id: postId } });
 
     await getPrisma().blog.update({
       where: {

@@ -1,16 +1,15 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "./SideBar";
 import RightBar from "./RightBar";
-import MobileDock from './MobileDock';
+import MobileDock from "./MobileDock";
 
 const MainLayout = () => {
   return (
     <>
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
-        <div className="w-50 bg-black text-white  relative border-r-[0.1px] border-stone-700 hidden md:block">
+        <div className="w-40 bg-black text-white  relative border-r-[0.1px] border-stone-700 hidden md:block">
           <SideBar />
-
         </div>
 
         {/* Main content */}
@@ -19,7 +18,7 @@ const MainLayout = () => {
         </div>
 
         {/* RightBar */}
-        <div className="min-w-100 hidden xl:block">
+        <div className="min-w-40 hidden xl:block">
           <RightBar />
         </div>
         <div className="block md:hidden sticky bottom-0 z-50">

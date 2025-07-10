@@ -13,7 +13,7 @@ import type { IGetProfileResp } from "../../vite-env";
 const ProfileSection = ({
   author,
 }: {
-  author: IGetProfileResp | undefined;
+  author: IGetProfileResp | null;
 }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();

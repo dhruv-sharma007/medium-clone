@@ -112,73 +112,6 @@ const userSignOut = async (c: Context) => {
 };
 
 // Get Profile -- discontinued
-const getProfile = async (c: Context) => {
-  try {
-    const use = c.get("user");
-    const prisma = getPrisma();
-
-    const data = await prisma.user.findUnique({
-      where: { id: use.id },
-      select: {
-        id: true,
-        name: true,
-        username: true,
-        profilePic: true,
-        bio: true,
-        _count: {
-          select: {
-            Blogs: true,
-            followers: true,
-            following: true,
-          },
-        },
-        Blogs: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            id: true,
-            title: true,
-            featuredImg: true,
-            isPublished: true,
-            slug: true,
-            createdAt: true,
-            _count: {
-              select: {
-                comments: true,
-                likes: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    if (!data) {
-      c.status(404);
-      return c.json(apiJson("User not found", {}, false));
-    }
-
-    const { _count, ...user } = data!;
-
-    c.status(200);
-    return c.json(
-      apiJson(
-        "User found successfully",
-        {
-          ...data,
-          postCount: _count.Blogs,
-          followersCount: _count.followers, // added two things
-          followingCount: _count.following,
-        },
-        true,
-      ),
-    );
-  } catch (error) {
-    const err = error as Error;
-    c.status(500);
-    return c.json(apiJson(err.message, {}, false));
-  }
-};
 
 const getAuthor = async (c: Context) => {
   try {
@@ -207,6 +140,14 @@ const getAuthor = async (c: Context) => {
           likes: true,
         },
       },
+      likes: {
+        where: {
+          userId: currentUser.id,
+        },
+        select: {
+          id: true,
+        },
+      }
     };
 
     const author = await prisma.user.findUnique({
@@ -417,7 +358,7 @@ export {
   userSignUp,
   userSignin,
   userSignOut,
-  getProfile,
+  // getProfile,
   deleteProfile,
   updateProfile,
   isUsernameAvailable,

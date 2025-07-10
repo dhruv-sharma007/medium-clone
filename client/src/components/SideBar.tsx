@@ -36,9 +36,7 @@ const SideBar = () => {
           />
         </Link>
 
-
         <Link to={"/search"}>
-
           <IoIosSearch
             className={`sidebar-icon text-gray-500 ${location.pathname.startsWith("/search") ? "text-white border-r-7" : "text-gray-500"}`}
           />
@@ -50,13 +48,13 @@ const SideBar = () => {
         </Link>
 
         <Link
-          to={`/profile/${user?.id}`}
+          to={`/profile/${user?.username}`}
           className="absolute bottom-8 group w-37 flex justify-end right-4"
         >
           <img
-            src="https://avatars.githubusercontent.com/u/184009911?v=4"
+            src={user?.profilePic}
             alt="Profile"
-            className="w-14 h-14 rounded-full cursor-pointer hover:ring"
+            className="w-14 h-14 object-cover rounded-full cursor-pointer hover:ring"
           />
           <div className="absolute top-4 left-14 -translate-x-1/2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out badge badge-ghost border-none rounded-sm bg-gray-500/45">
             Profile

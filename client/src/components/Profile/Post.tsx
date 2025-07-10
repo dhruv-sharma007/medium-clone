@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import Published from "../ui/Published";
 import PostMenu from "../PostMenu";
 import { useAuthStore } from "../../store/auth";
+import { BiSolidLike } from "react-icons/bi";
+import { useLike } from "../../hooks";
 
 interface PostProps {
   profileImage: string;
@@ -17,6 +19,7 @@ interface PostProps {
   authorUsername: string;
   blogId: string;
   badge: "show" | "hide";
+  isLikedByUser: boolean
 }
 
 const Post = ({
@@ -31,13 +34,18 @@ const Post = ({
   authorUsername,
   blogId,
   badge,
+  isLikedByUser = false
 }: PostProps) => {
-  const { user } = useAuthStore()
+  const { createLikeHook, deleteLikeHook } = useLike()
+  const { user } = useAuthStore();
   return (
-    <div className="min-w-120 max-w-150 max-h-188 rounded-xl p-4 bg-white shadow-md transition hover:shadow-lg">
+    <div className="w-120 max-h-170 rounded-xl p-4 bg-white shadow-md transition hover:shadow-lg">
       {/* Author Info */}
       <section className="flex justify-between items-start mb-3">
-        <Link to={`/profile/${authorUsername}`} className="flex gap-3 items-center">
+        <Link
+          to={`/profile/${authorUsername}`}
+          className="flex gap-3 items-center"
+        >
           <img
             src={profileImage}
             alt={`${authorName}'s profile`}
@@ -51,18 +59,25 @@ const Post = ({
           </div>
         </Link>
         <div className="flex items-center gap-2">
-
-          {user?.username === authorUsername ? badge === "show" ? (
-            isPublished ? (
-              <Published isPublished={true} />
+          {user?.username === authorUsername ? (
+            badge === "show" ? (
+              isPublished ? (
+                <Published isPublished={true} />
+              ) : (
+                <Published isPublished={false} />
+              )
             ) : (
-              <Published isPublished={false} />
+              <></>
             )
           ) : (
-            <></>
-          ) : ''}
+            ""
+          )}
 
-          <PostMenu authorId={authorUsername} id={blogId} pubValue={isPublished} />
+          <PostMenu
+            authorId={authorUsername}
+            id={blogId}
+            pubValue={isPublished}
+          />
         </div>
       </section>
 
@@ -75,12 +90,12 @@ const Post = ({
           <img
             src={featuredImage}
             alt="Blog cover"
-            className="w-full h-140 object-cover rounded-lg bg-gray-200"
+            className="w-full h-115 object-cover rounded-lg bg-gray-200"
           />
         </section>
       </Link>
       {/* Stats */}
-      
+
       <section className="flex justify-between px-8 text-xs text-gray-600 mb-2">
         <p>
           <span className="font-bold">{likes}</span> Likes
@@ -92,8 +107,16 @@ const Post = ({
 
       {/* Actions */}
       <section className="flex justify-around border-t border-gray-200 pt-2">
-        <button>
-          <BiLike className="text-blue-500" size={24} />
+        <button className="cursor-pointer">
+          {isLikedByUser ?
+            <BiSolidLike size={24} className="text-blue-500"
+            />
+            :
+            <BiLike className="text-blue-500" size={24}
+              onClick={() => createLikeHook(blogId, user?.id || '')}
+
+            />
+          }
         </button>
         <button>
           <MdOutlineInsertComment className="text-gray-600" size={24} />

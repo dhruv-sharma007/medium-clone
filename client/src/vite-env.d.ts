@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { IGetProfileResponse } from "@medium-clone/common";
+// import typfrom "@medium-clone/common";
 import type { IBlog } from "./hooks";
 
 interface IUserData {
@@ -61,6 +61,7 @@ export type POST = {
     profilePic: string;
     bio: string;
   };
+  isLikedByUser: boolean
 };
 
 export type TGetBlogsResponse = {
@@ -104,16 +105,15 @@ export interface IPost {
   id: string;
   title: string;
   content: string;
-  createdAt: string;            
+  createdAt: string;
   featuredImg?: string | null;
-  likes: any[];               
-  comments: any[];             
   _count: IBlogCount;
   user: IBlogUser;
+  isLikedByUser: boolean;
 }
 
 export interface IBLOGRESPONSE {
   data: IPost;
   message: string;
-  success: boolean
+  success: boolean;
 }
