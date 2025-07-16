@@ -3,7 +3,9 @@ import {
   deleteProfile,
   editProfile,
   getAuthor,
+  getTop5,
   isUsernameAvailable,
+  searchUser,
   userSignin,
   userSignOut,
   userSignUp,
@@ -29,5 +31,8 @@ user.get("/getAuthor/:username", userAuth, getAuthor);
 
 user.get("/follow/:authorId", userAuth, createFollow);
 user.delete("/follow/:authorId", userAuth, deleteFollow);
+
+user.get("/get-top5", getTop5);
+user.get("/search/:name", searchUser);
 
 export default user;

@@ -75,7 +75,7 @@ const UploadPost = ({
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[200px] p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full min-h-[200px] p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none whitespace-pre-wrap"
             placeholder="Write your post content here..."
             required
           />

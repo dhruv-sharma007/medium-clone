@@ -9,6 +9,7 @@ const createComment = async (c: Context) => {
 
   if (!res.success) {
     c.status(400);
+    res.error.flatten();
     return c.json(apiJson(res.error.message, {}, false));
   }
 
@@ -89,18 +90,9 @@ const getComments = async (c: Context) => {
         },
       },
     });
+    console.log(comments);
 
-    return c.json(
-      apiJson(
-        "Comments fetched successfully",
-        {
-          page,
-          limit,
-          data: comments,
-        },
-        true,
-      ),
-    );
+    return c.json(apiJson("Comments fetched successfully", { comments }, true));
   } catch (err) {
     console.error("Error fetching comments:", err);
     c.status(500);

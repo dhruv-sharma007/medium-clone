@@ -5,6 +5,7 @@ import {
   getBlog,
   getBulkBlogs,
   postBlog,
+  searchBlog,
   updateBlog,
 } from "../controllers/blog.controller";
 import { getBlogsMid, userAuth } from "../middlewares/userAuth.mid";
@@ -39,6 +40,7 @@ blogRouter.delete("/like-blog/:id", userAuth, deleteLike);
 
 blogRouter.post("/comment-blog", userAuth, createComment);
 blogRouter.delete("/comment-blog/:id", userAuth, deleteComment);
-blogRouter.get("/blogs/:blogid/comments", getComments); // GET /blogs/:blogid/comments?page=1&limit=5
+blogRouter.get("/:blogid/comments", getComments); // GET /blogs/:blogid/comments?page=1&limit=5
 
+blogRouter.get("/search/:searchTerm", searchBlog); // GET /blogs/:blogid/comments?page=1&limit=5
 export default blogRouter;

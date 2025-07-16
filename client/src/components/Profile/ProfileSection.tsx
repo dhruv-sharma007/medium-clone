@@ -10,11 +10,7 @@ import { useFollow } from "../../hooks";
 import type { IGetProfileResp } from "../../vite-env";
 // import { IoSettings } from "react-icons/io5";
 
-const ProfileSection = ({
-  author,
-}: {
-  author: IGetProfileResp | null;
-}) => {
+const ProfileSection = ({ author }: { author: IGetProfileResp | null }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   // console.log("--------", author);
@@ -138,9 +134,9 @@ const ProfileSection = ({
                       {/* add functionnality of follow unfollow */}
                     </>
                   )}
-                  <button className="btn btn-info btn-sm rounded-lg">
+                  {/* <button className="btn btn-info btn-sm rounded-lg">
                     Chat
-                  </button>
+                  </button> */}
                 </div>
               </>
             )}

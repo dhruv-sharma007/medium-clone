@@ -10,7 +10,7 @@ const Profile = () => {
   const { username } = useParams();
 
   const { error, loading } = useGetAuthor(username);
-  const { authorProfile: author } = useAuthorProfileStore()
+  const { authorProfile: author } = useAuthorProfileStore();
   // console.log(author);
 
   if (loading) return <RotateLoading />;
@@ -29,7 +29,7 @@ const Profile = () => {
     <>
       <ProfileSection author={author} />
 
-      <div className="h-full w-full grid grid-cols-1 2xl:grid-cols-3  gap-4 justify-items-center m-1 mb-2">
+      <div className="h-full w-full grid grid-cols-1 4xl:grid-cols-3 gap-4 justify-items-center m-1 mb-2">
         {author?.Blogs.map((blog) => (
           <Post
             authorBio={author.bio}
@@ -47,6 +47,7 @@ const Profile = () => {
           />
         ))}
       </div>
+      <div className="min-h-20"></div>
     </>
   );
 };

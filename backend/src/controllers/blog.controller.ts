@@ -148,8 +148,6 @@ const getBlog = async (c: Context) => {
   }
 };
 
-// GET: Get all blogs
-
 // TODO: ADD pagination <-----------
 const getBulkBlogs = async (c: Context) => {
   const page = c.req.query("p");
@@ -294,6 +292,67 @@ const changePublish = async (c: Context) => {
   }
 };
 
+const searchBlog = async (c: Context) => {
+  try {
+    const searchTerm = c.req.param('searchTerm')
+    if (searchTerm.trim() === "") {
+      c.status(400);
+      return c.json(apiJson("Search term should not be empty", {}, false));
+    }
+    const data = await getPrisma().blog.findMany({
+      where: {
+        title: {
+          contains: searchTerm,
+          mode: "insensitive",
+        }
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 12,
+      select: {
+        id: true,
+        title: true,
+        featuredImg: true,
+        isPublished: true,
+        slug: true,
+        createdAt: true,
+        _count: {
+          select: {
+            comments: true,
+            likes: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            profilePic: true,
+            bio: true,
+          },
+        },
+        // likes: {
+        //   where: {
+        //     userId: userId,
+        //   },
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+      },
+    })
+    c.status(200)
+    return c.json(apiJson("Found blogs successfully", data, false));
+
+  } catch (error) {
+    const err = error as Error;
+    console.log(err);
+    c.status(500);
+    return c.json(apiJson(err.message, {}, false));
+  }
+}
+
 export {
   postBlog,
   updateBlog,
@@ -301,4 +360,5 @@ export {
   getBulkBlogs,
   deleteBlog,
   changePublish,
+  searchBlog
 };

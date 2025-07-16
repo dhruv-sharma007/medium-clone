@@ -1,11 +1,11 @@
-import { BiLike } from "react-icons/bi";
-import { MdOutlineInsertComment } from "react-icons/md";
+// import { BiLike } from "react-icons/bi";
+// import { MdOutlineInsertComment } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Published from "../ui/Published";
-import PostMenu from "../PostMenu";
+import PostMenu from "./PostMenu";
 import { useAuthStore } from "../../store/auth";
-import { BiSolidLike } from "react-icons/bi";
-import { useLike } from "../../hooks";
+// import { BiSolidLike } from "react-icons/bi";
+// import { useLike } from "../../hooks";
 
 interface PostProps {
   profileImage: string;
@@ -19,7 +19,7 @@ interface PostProps {
   authorUsername: string;
   blogId: string;
   badge: "show" | "hide";
-  isLikedByUser: boolean
+  // isLikedByUser: boolean
 }
 
 const Post = ({
@@ -28,18 +28,18 @@ const Post = ({
   authorBio,
   title,
   featuredImage,
-  likes,
+  // likes,
   comments,
   isPublished,
   authorUsername,
   blogId,
   badge,
-  isLikedByUser = false
+  // isLikedByUser = false
 }: PostProps) => {
-  const { createLikeHook, deleteLikeHook } = useLike()
+  // const { createLikeHook, deleteLikeHook } = useLike()
   const { user } = useAuthStore();
   return (
-    <div className="w-120 max-h-170 rounded-xl p-4 bg-white shadow-md transition hover:shadow-lg">
+    <div className="sm:w-110 sm:max-h-155 rounded-xl p-4 bg-white shadow-md transition hover:shadow-lg">
       {/* Author Info */}
       <section className="flex justify-between items-start mb-3">
         <Link
@@ -96,10 +96,10 @@ const Post = ({
       </Link>
       {/* Stats */}
 
-      <section className="flex justify-between px-8 text-xs text-gray-600 mb-2">
-        <p>
+      <section className="flex justify-end px-8 text-xs text-gray-600 mb-2">
+        {/* <p>
           <span className="font-bold">{likes}</span> Likes
-        </p>
+        </p> */}
         <p>
           <span className="font-bold">{comments}</span> Comments
         </p>
@@ -107,7 +107,7 @@ const Post = ({
 
       {/* Actions */}
       <section className="flex justify-around border-t border-gray-200 pt-2">
-        <button className="cursor-pointer">
+        {/* <button className="cursor-pointer">
           {isLikedByUser ?
             <BiSolidLike size={24} className="text-blue-500"
             />
@@ -117,10 +117,10 @@ const Post = ({
 
             />
           }
-        </button>
-        <button>
+        </button> */}
+        {/* <button>
           <MdOutlineInsertComment className="text-gray-600" size={24} />
-        </button>
+        </button> */}
       </section>
     </div>
   );

@@ -51,4 +51,4 @@ const deleteLike = async (c: Context) => {
   }
 };
 
-export { createLike, deleteLike }
+export { createLike, deleteLike };

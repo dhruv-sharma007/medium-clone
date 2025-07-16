@@ -15,8 +15,6 @@
 		"noImplicitThis": true,
 		"alwaysStrict": true,
 		"exactOptionalPropertyTypes": true,
-		
-
 		"typeRoots": ["./types", "./node_modules/@types"]
 	}
 }

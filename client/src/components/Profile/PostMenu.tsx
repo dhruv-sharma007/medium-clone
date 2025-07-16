@@ -1,12 +1,12 @@
 import { CiMenuKebab, CiShare1 } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "../../store/auth";
 import { useNavigate } from "react-router-dom";
-import { useDeleteBlog, usePublishChange } from "../hooks";
+import { useDeleteBlog, usePublishChange } from "../../hooks";
 import { FaExchangeAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { useAuthorProfileStore } from "../store/author";
+import { useAuthorProfileStore } from "../../store/author";
 
 const PostMenu = ({
   authorId,
@@ -25,21 +25,21 @@ const PostMenu = ({
   const { changePublishHook, response: usePublishChangeResponse } =
     usePublishChange(id, publishValue);
 
-  const { updateBlogPublishStatus, authorProfile } = useAuthorProfileStore()
+  const { updateBlogPublishStatus, authorProfile } = useAuthorProfileStore();
 
   const onPublishChange = async () => {
     try {
       setPublishValue((prev) => !prev);
       await changePublishHook();
       if (usePublishChangeResponse?.success) {
-        updateBlogPublishStatus(id, publishValue)
+        updateBlogPublishStatus(id, publishValue);
       }
       toast.success(
-        usePublishChangeResponse?.message || 'changed status of publish',
+        usePublishChangeResponse?.message || "changed status of publish",
       );
       console.log(authorProfile);
 
-      // window.location.reload(); 
+      // window.location.reload();
     } catch (err) {
       const error = err as Error;
       toast.error(String(error?.message));

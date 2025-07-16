@@ -11,6 +11,7 @@ import type {
   ILOGINRESPONSE,
   IUserProfile,
   TGetBlogsResponse,
+  TGetBlogsSearch,
 } from "../vite-env";
 import { useAuthStore } from "../store/auth";
 
@@ -104,4 +105,31 @@ export const createLike = async (data: { userId: string; postId: string }) => {
 };
 export const unlike = async (data: { userId: string; postId: string }) => {
   return await api.post<apiResponse>(`/blog/like-blog`, data);
+};
+
+export const getComments = async (blogId: string) => {
+  return await api.get(`/blog/${blogId}/comments?page=1&limit=35`);
+};
+
+export const postComment = async (data: {
+  content: string;
+  blogid: string;
+  userId: string;
+}) => {
+  return await api.post(`/blog/comment-blog`, data);
+};
+export const deleteComment = async (id: string) => {
+  return await api.delete(`/blog/comment-blog/${id}`);
+};
+export const getTopUsers = async () => {
+  return await api.get(`/user/get-top5`);
+};
+export const searchPostApi = async (searchTerm: string, options: AxiosRequestConfig,) => {
+  return await api.get<TGetBlogsSearch>(`/blog/search/${searchTerm}`, options);
+};
+export const searchUsers = async (
+  name: string,
+  options: AxiosRequestConfig,
+) => {
+  return await api.get(`/user/search/${name}`, options);
 };

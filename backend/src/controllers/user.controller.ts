@@ -6,6 +6,7 @@ import { sign } from "hono/jwt";
 import { deleteCookie, setCookie } from "hono/cookie";
 import argon from "argon2";
 import { imagekit } from "../utils/fileUpload";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 // User Sign Up
 const userSignUp = async (c: Context) => {
@@ -111,8 +112,6 @@ const userSignOut = async (c: Context) => {
   return c.json(apiJson("User logged out successfully!", {}, true));
 };
 
-// Get Profile -- discontinued
-
 const getAuthor = async (c: Context) => {
   try {
     const username = c.req.param("username");
@@ -147,7 +146,7 @@ const getAuthor = async (c: Context) => {
         select: {
           id: true,
         },
-      }
+      },
     };
 
     const author = await prisma.user.findUnique({
@@ -354,15 +353,90 @@ const editProfile = async (c: Context) => {
   }
 };
 
+const getTop5 = async (c: Context) => {
+  try {
+    const topUsers = await getPrisma().user.findMany({
+      orderBy: {
+        followers: {
+          _count: "desc",
+        },
+      },
+      take: 5,
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        profilePic: true,
+        bio: true,
+        _count: {
+          select: {
+            followers: true,
+          },
+        },
+      },
+    });
+
+    return c.json(apiJson("Top users fetched", topUsers, true));
+  } catch (error) {
+    console.error("Error fetching top users:", error);
+    c.status(500);
+    return c.json(apiJson("Failed to fetch top users", {}, false));
+  }
+};
+
+const searchUser = async (c: Context) => {
+  try {
+    const name = c.req.param("name");
+
+    if (name.trim() === "" || !name || typeof name !== "string") {
+      c.status(400);
+      return c.json(apiJson("send name correctly", {}, false));
+    }
+
+    const data = await getPrisma().user.findMany({
+      where: {
+        OR: [
+          { name: { contains: name, mode: "insensitive" } },
+          { username: { contains: name, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        profilePic: true,
+        name: true,
+        username: true,
+        bio: true,
+      },
+      orderBy: {
+        followers: {
+          _count: "desc"
+        }
+      }
+    });
+    c.status(200);
+    return c.json(apiJson("found users", data, true));
+  } catch (error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === "2025") {
+        c.status(404);
+        return c.json(apiJson("User not found", {}, true));
+      }
+    }
+    c.status(500);
+    return c.json(apiJson(error.message, {}, false));
+  }
+};
+
 export {
   userSignUp,
   userSignin,
   userSignOut,
-  // getProfile,
   deleteProfile,
   updateProfile,
   isUsernameAvailable,
   changePassword,
   editProfile,
   getAuthor,
+  getTop5,
+  searchUser,
 };

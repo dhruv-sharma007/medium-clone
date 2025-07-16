@@ -8,6 +8,7 @@ import Profile from "../pages/Profile";
 import EditProfile from "../pages/EditProfile";
 import ProfileSettings from "../pages/ProfileSettings";
 import SearchPage from "../pages/SearchPage";
+import NotFound from "../pages/NotFound";
 
 export interface AppRoute {
   path: string;
@@ -17,10 +18,11 @@ export interface AppRoute {
 export const PublicRoutes: AppRoute[] = [
   { path: "/", element: Blogs },
   { path: "/blog/:id", element: Blog },
+  { path: "*", element: NotFound },
 ];
 
 export const ProtectedRoutes = [
-  { path: "/blog-edit", element: EditProfile },
+  // { path: "/blog-edit", element: EditProfile },
   { path: "/create-post", element: CreatePost },
   { path: "/profile/:username", element: Profile },
   { path: "/profile-edit", element: EditProfile },

@@ -40,7 +40,7 @@ const Blogs = () => {
                 blogId={blog.id}
                 badge="hide"
                 isPublished
-                isLikedByUser={blog.isLikedByUser}
+              // isLikedByUser={blog.isLikedByUser}
               />
             ))}
         </div>

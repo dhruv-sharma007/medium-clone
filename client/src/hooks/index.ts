@@ -10,14 +10,15 @@ import {
   getBlog,
   getBlogs,
   getMeProfile,
+  searchPostApi,
 } from "../lib/api";
 import type {
   apiResponse,
   CreateBlogInput,
   // IGetProfileResponse,
 } from "@medium-clone/common";
-import { createFollow } from "../lib/api";
-import type { IGetProfileResp, IPost, POST } from "../vite-env";
+import { createFollow, searchUsers } from "../lib/api";
+import type { IGetProfileResp, IPost, ITopUser, POST } from "../vite-env";
 import { usePostStore } from "../store/post";
 import { useAuthorProfileStore } from "../store/author";
 import toast from "react-hot-toast";
@@ -26,22 +27,32 @@ import toast from "react-hot-toast";
 
 export const useGetPosts = () => {
   // const [blogs, setBlogs] = useState<POST[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const { addPosts, posts: blogs } = usePostStore();
+  // const [page, setPage] = useState(1);
+  // const [hasMore, setHasMore] = useState(true);
+  const { addPosts, posts: blogs, page, setPage, hasMore, setHasMore } = usePostStore();
 
   const fetchPost = async () => {
-    const res = await getBlogs(page);
-    const newPosts = res.data.data.posts;
-    const total = res.data.data.totalPosts;
+    try {
+      const res = await getBlogs(page);
+      const newPosts = res.data.data.posts;
+      const total = res.data.data.totalPosts;
+      setPage(page + 1);
 
-    addPosts(newPosts);
-    setHasMore(page * 12 < total);
-    setPage((prev) => prev + 1);
+      addPosts(newPosts);
+      setHasMore(page * 12 < total);
+      console.log(page)
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    fetchPost();
+
+    if (blogs.length == 0) {
+      fetchPost();
+    }
+
   });
 
   return { blogs, fetchPost, hasMore };
@@ -172,7 +183,7 @@ const useCheckUsername = (minLength = 4, debounceMs = 400) => {
       return;
     }
 
-    const hasInvalidChars = /[^a-z0-9_]/.test(username.trim()); // also ensures lowercase
+    const hasInvalidChars = /[^a-z0-9_]/.test(username.trim());
     if (hasInvalidChars) {
       setSuccess(false);
       setMessage(
@@ -236,7 +247,7 @@ export interface IBlog {
 const useGetAuthor = (username: string | undefined) => {
   const [loading, setLoading] = useState<boolean>();
   const [error, setError] = useState<Error | null>(null);
-  const { setProfile, authorProfile } = useAuthorProfileStore()
+  const { setProfile, authorProfile } = useAuthorProfileStore();
 
   useEffect(() => {
     setLoading(true);
@@ -310,7 +321,6 @@ const usePublishChange = (postId: string, v: boolean) => {
   return { changePublishHook, error, loading, response };
 };
 
-
 const useLike = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -322,7 +332,7 @@ const useLike = () => {
       const res = await createLike({ postId, userId });
       console.log(res);
       setResponse(res.data);
-      toast.success(response?.message || 'Post liked')
+      toast.success(response?.message || "Post liked");
     } catch (err) {
       const error = err as Error;
       setError(error);
@@ -345,6 +355,115 @@ const useLike = () => {
   return { createLikeHook, deleteLikeHook, error, loading, response };
 };
 
+// still have to understand debouncing
+const useSearchUser = (minLength = 3, debounceMs = 400) => {
+  const [users, setUsers] = useState<ITopUser[] | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const debounceRef = useRef<number | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (searchTerm.length < minLength) {
+      setUsers(null); // clear result if too short
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    // Abort previous request
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+
+    // Debounce the request
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    debounceRef.current = window.setTimeout(() => {
+      searchUsers(searchTerm, { signal: controller.signal })
+        .then((res) => {
+          setUsers(res.data.data);
+          // console.log(users);
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError") {
+            setError(err);
+          }
+        })
+        .finally(() => setLoading(false));
+    }, debounceMs);
+
+    // Cleanup
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, [searchTerm, debounceMs, minLength]);
+
+  return { users, setSearchTerm, searchTerm, loading, error };
+};
+
+const useSearchPost = (searchTerm: string, minLength = 3, debounceMs = 400) => {
+  const [posts, setPosts] = useState<POST[]>();
+  // const [s, s] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const debounceRef = useRef<number | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (searchTerm.length < minLength) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    // Abort previous request
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+
+    // Debounce the request
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    debounceRef.current = window.setTimeout(() => {
+      searchPostApi(searchTerm, { signal: controller.signal })
+        .then((res) => {
+          setPosts(res.data.data);
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError") {
+            setError(err);
+          }
+        })
+        .finally(() => setLoading(false));
+    }, debounceMs);
+
+    // Cleanup
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, [searchTerm, debounceMs, minLength]);
+
+  return { posts, loading, error };
+};
+
 export {
   // useBlogs,
   usePublishChange,
@@ -355,5 +474,7 @@ export {
   useCheckUsername,
   useGetAuthor,
   useFollow,
-  useLike
+  useLike,
+  useSearchUser,
+  useSearchPost
 };

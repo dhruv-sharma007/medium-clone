@@ -1,4 +1,10 @@
-const Search = () => {
+const Search = ({
+  searchTerm,
+  setSearchTerm,
+}: {
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
     <div className="flex items-center gap-2 px-5 bg-gray-900 rounded-full shadow-x min-h-10 ring">
       <svg
@@ -18,6 +24,8 @@ const Search = () => {
       <input
         type="search"
         placeholder="Search"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         className="grow outline-none focus:ring-0 border-gray- text-sm text-white"
       />
     </div>

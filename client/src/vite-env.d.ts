@@ -61,7 +61,7 @@ export type POST = {
     profilePic: string;
     bio: string;
   };
-  isLikedByUser: boolean
+  isLikedByUser?: boolean;
 };
 
 export type TGetBlogsResponse = {
@@ -71,6 +71,11 @@ export type TGetBlogsResponse = {
     totalPosts: number;
     posts: POST[];
   };
+};
+export type TGetBlogsSearch = {
+  success: boolean;
+  message: string;
+  data: POST[]
 };
 
 export interface IGetProfileResp {
@@ -116,4 +121,31 @@ export interface IBLOGRESPONSE {
   data: IPost;
   message: string;
   success: boolean;
+}
+
+export interface IUserMini {
+  id: string;
+  username: string;
+  name: string;
+  profilePic: string | null;
+}
+
+export interface IComment {
+  id: string;
+  content: string;
+  blogid: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  user: IUserMini;
+}
+export interface ITopUser {
+  id: string;
+  name: string | null;
+  username: string;
+  profilePic: string | null;
+  bio: string | null;
+  _count: {
+    followers: number;
+  };
 }
