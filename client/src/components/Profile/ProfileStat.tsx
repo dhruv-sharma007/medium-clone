@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 const ProfileStat = ({
   following,
   followers,
@@ -14,9 +15,11 @@ const ProfileStat = ({
         <p className="text-sm text-gray-500">Posts</p>
       </div>
       <div>
+        <Link to={'/profile-stat'}>
         <p className="font-bold text-lg">
           {String(followers).trim() === "" ? 0 : followers}
         </p>
+        </Link>
         <p className="text-sm text-gray-500">Followers</p>
       </div>
       <div>

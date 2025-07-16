@@ -26,7 +26,7 @@ const Profile = () => {
   }
 
   return (
-    <>
+    <div className="mb-15 sm:mb-0">
       <ProfileSection author={author} />
 
       <div className="h-full w-full grid grid-cols-1 4xl:grid-cols-3 gap-4 justify-items-center m-1 mb-2">
@@ -47,8 +47,8 @@ const Profile = () => {
           />
         ))}
       </div>
-      <div className="min-h-20"></div>
-    </>
+      
+    </div>
   );
 };
 

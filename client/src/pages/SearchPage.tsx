@@ -6,11 +6,13 @@ import { useSearchPost, useSearchUser } from "../hooks";
 // import toast from "react-hot-toast";
 import AuthorInfo from "../components/Profile/AuthorInfo";
 import Post from '../components/Profile/Post';
+import { useState } from "react";
 
 const SearchPage = () => {
   // const [topUsers, setTopUsers] = useState<ITopUser[]>([]); 
   const { users, setSearchTerm, searchTerm } = useSearchUser();
   const { posts } = useSearchPost(searchTerm);
+  const [isPosts, setIsPosts] = useState();
 
   // useEffect(() => {
   //   if (topUsers?.length === 0) {
@@ -32,7 +34,7 @@ const SearchPage = () => {
 
       <div className="flex flex-col sm:flex-row justify-center mt-4 min-h-[85vh] gap-6 px-4">
 
-        <div className="w-full sm:w-1/3 h-[85vh] overflow-y-auto bg-white rounded-lg shadow">
+        <div className="w-full sm:w-1/3 max-h-[85vh] overflow-y-auto bg-white rounded-lg shadow">
           <ul className="p-4 space-y-3">
             {users ? users?.map((user) => (
               <li key={user.id}>

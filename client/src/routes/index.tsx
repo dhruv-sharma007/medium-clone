@@ -9,6 +9,7 @@ import EditProfile from "../pages/EditProfile";
 import ProfileSettings from "../pages/ProfileSettings";
 import SearchPage from "../pages/SearchPage";
 import NotFound from "../pages/NotFound";
+import ProfileStats from "../pages/ProfileStats";
 
 export interface AppRoute {
   path: string;
@@ -28,6 +29,7 @@ export const ProtectedRoutes = [
   { path: "/profile-edit", element: EditProfile },
   { path: "/profile-settings", element: ProfileSettings },
   { path: "/search", element: SearchPage },
+  { path: "/profile-stat", element: ProfileStats },
 ];
 
 export const AuthRoutes: AppRoute[] = [
