@@ -12,9 +12,9 @@ interface POSTSTORE {
 
 export const usePostStore = create<POSTSTORE>((set) => ({
   posts: [],
-  page: 1,
   hasMore: true,
   setHasMore: (condition: boolean) => set(() => ({ hasMore: condition })),
+  page: 1,
   setPage: (page: number) => set(() => ({ page })),
   addPosts: (post: POST[]) =>
     set((state) => ({

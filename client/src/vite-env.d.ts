@@ -149,3 +149,22 @@ export interface ITopUser {
     followers: number;
   };
 }
+type UserPreview = {
+  id: string;
+  username: string;
+  name: string | null;
+  profilePic: string | null;
+};
+
+export type FollowersResponseData = {
+  followersData: UserPreview[];
+  followingData: UserPreview[];
+};
+
+type APIResponse<T> = {
+  message: string;
+  data: T;
+  success: boolean;
+};
+
+export type GetFollowersAndFollowingResponse = APIResponse<FollowersResponseData>;

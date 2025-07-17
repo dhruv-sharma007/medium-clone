@@ -29,7 +29,7 @@ export const ProtectedRoutes = [
   { path: "/profile-edit", element: EditProfile },
   { path: "/profile-settings", element: ProfileSettings },
   { path: "/search", element: SearchPage },
-  { path: "/profile-stat", element: ProfileStats },
+  { path: "/profile-stat/:id", element: ProfileStats },
 ];
 
 export const AuthRoutes: AppRoute[] = [

@@ -6,6 +6,7 @@ import type {
 } from "@medium-clone/common";
 import axios, { type AxiosRequestConfig } from "axios";
 import type {
+  GetFollowersAndFollowingResponse,
   IBLOGRESPONSE,
   IEditProfileResponse,
   ILOGINRESPONSE,
@@ -132,4 +133,14 @@ export const searchUsers = async (
   options: AxiosRequestConfig,
 ) => {
   return await api.get(`/user/search/${name}`, options);
+};
+
+export const getFollowersAndFollowingApi = async (
+  userId: string,
+  // options: AxiosRequestConfig,
+  page: string,
+  limit: string
+) => {
+  return await api.get<GetFollowersAndFollowingResponse>
+    (`/user/getFollowersAndFollowing/${userId}?page=${page}&limit=${limit}`);
 };

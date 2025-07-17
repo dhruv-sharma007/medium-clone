@@ -52,10 +52,10 @@ const deleteFollow = async (c: Context) => {
   }
 };
 
-const getFollowers = async (c: Context) => {
+const getFollowersAndFollowing = async (c: Context) => {
   const { id } = c.req.param();
   const page = parseInt(c.req.query("page") || "1");
-  const limit = parseInt(c.req.query("limit") || "10");
+  const limit = parseInt(c.req.query("limit") || "50");
 
   if (!id) {
     c.status(400);
@@ -63,33 +63,54 @@ const getFollowers = async (c: Context) => {
   }
 
   try {
-    const followers = await getPrisma().follow.findMany({
-      where: {
-        followingId: id,
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        follower: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            profilePic: true,
+
+    const [following, followers] = await Promise.all([
+      getPrisma().follow.findMany({
+        where: {
+          followerId: id,
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+
+        include: {
+          following: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              profilePic: true,
+            },
           },
         },
-      },
-    });
+      }),
+      getPrisma().follow.findMany({
+        where: {
+          followingId: id,
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          follower: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              profilePic: true,
+            },
+          },
+        },
+      })
+    ])
 
-    const result = followers.map((f) => f.follower);
+    const followersData = followers.map((f) => f.follower);
+    const followingData = following.map((f) => f.following);
 
     return c.json(
       apiJson(
         "Followers fetched successfully",
         {
-          page,
-          limit,
-          data: result,
+          followersData,
+          followingData
         },
         true,
       ),
@@ -100,54 +121,4 @@ const getFollowers = async (c: Context) => {
     return c.json(apiJson("Failed to fetch followers", {}, false));
   }
 };
-
-const getFollowings = async (c: Context) => {
-  const { id } = c.req.param();
-  const page = parseInt(c.req.query("page") || "1");
-  const limit = parseInt(c.req.query("limit") || "10");
-
-  if (!id) {
-    c.status(400);
-    return c.json(apiJson("User ID is required", {}, false));
-  }
-
-  try {
-    const followings = await getPrisma().follow.findMany({
-      where: {
-        followerId: id,
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        following: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            profilePic: true,
-          },
-        },
-      },
-    });
-
-    const result = followings.map((f) => f.following);
-
-    return c.json(
-      apiJson(
-        "Followings fetched successfully",
-        {
-          page,
-          limit,
-          data: result,
-        },
-        true,
-      ),
-    );
-  } catch (err) {
-    console.error("Error fetching followings:", err);
-    c.status(500);
-    return c.json(apiJson("Failed to fetch followings", {}, false));
-  }
-};
-
-export { createFollow, deleteFollow };
+export { createFollow, deleteFollow, getFollowersAndFollowing };

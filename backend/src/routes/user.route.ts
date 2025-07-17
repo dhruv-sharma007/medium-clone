@@ -1,4 +1,4 @@
-import { createFollow, deleteFollow } from "../controllers/follow.controller";
+import { createFollow, deleteFollow, getFollowersAndFollowing } from "../controllers/follow.controller";
 import {
   deleteProfile,
   editProfile,
@@ -34,5 +34,7 @@ user.delete("/follow/:authorId", userAuth, deleteFollow);
 
 user.get("/get-top5", getTop5);
 user.get("/search/:name", searchUser);
+
+user.get("/getFollowersAndFollowing/:id", getFollowersAndFollowing)
 
 export default user;

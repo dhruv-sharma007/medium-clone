@@ -6,13 +6,12 @@ import { useSearchPost, useSearchUser } from "../hooks";
 // import toast from "react-hot-toast";
 import AuthorInfo from "../components/Profile/AuthorInfo";
 import Post from '../components/Profile/Post';
-import { useState } from "react";
 
 const SearchPage = () => {
   // const [topUsers, setTopUsers] = useState<ITopUser[]>([]); 
   const { users, setSearchTerm, searchTerm } = useSearchUser();
   const { posts } = useSearchPost(searchTerm);
-  const [isPosts, setIsPosts] = useState();
+  // const [isPosts, setIsPosts] = React.useState();
 
   // useEffect(() => {
   //   if (topUsers?.length === 0) {

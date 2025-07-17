@@ -77,6 +77,7 @@ const ProfileSection = ({ author }: { author: IGetProfileResp | null }) => {
               followers={author?.followers}
               following={author?.following}
               posts={author?.postCount}
+              id={author?.id}
             />
 
             {user?.id === author?.id ? (

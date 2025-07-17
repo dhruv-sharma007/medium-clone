@@ -9,6 +9,7 @@ import {
   getAuthor,
   getBlog,
   getBlogs,
+  getFollowersAndFollowingApi,
   getMeProfile,
   searchPostApi,
 } from "../lib/api";
@@ -22,6 +23,7 @@ import type { IGetProfileResp, IPost, ITopUser, POST } from "../vite-env";
 import { usePostStore } from "../store/post";
 import { useAuthorProfileStore } from "../store/author";
 import toast from "react-hot-toast";
+import { useProfileStatStore } from "../store/ProfileState";
 
 // --------- useBlogs ---------
 
@@ -40,7 +42,7 @@ export const useGetPosts = () => {
 
       addPosts(newPosts);
       setHasMore(page * 12 < total);
-      console.log(page)
+      // console.log(page) 
 
     } catch (error) {
       console.log(error);
@@ -464,6 +466,7 @@ const useSearchPost = (searchTerm: string, minLength = 3, debounceMs = 400) => {
   return { posts, loading, error };
 };
 
+
 export {
   // useBlogs,
   usePublishChange,
@@ -476,5 +479,5 @@ export {
   useFollow,
   useLike,
   useSearchUser,
-  useSearchPost
-};
+  useSearchPost,
+}

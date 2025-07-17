@@ -90,7 +90,7 @@ const getComments = async (c: Context) => {
         },
       },
     });
-    console.log(comments);
+    // console.log(comments);
 
     return c.json(apiJson("Comments fetched successfully", { comments }, true));
   } catch (err) {
