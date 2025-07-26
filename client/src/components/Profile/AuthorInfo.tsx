@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import type { IProfileUpdate } from "../../vite-env";
+// import type { ITopUser } from "../../vite-env"; 
 
-const AuthorInfo = ({ author }: { author: IProfileUpdate | null }) => {
+const AuthorInfo = ({ author }: { author: any | null }) => {
   // console.log('',author);
 
   return (

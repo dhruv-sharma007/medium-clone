@@ -26,5 +26,6 @@ app.route("/api/v1/blog", blogRouter);
 Bun.serve({
   port: 8787,
   fetch: app.fetch,
+  hostname: "0.0.0.0"
 });
 console.log(`🚀 Server running at http://localhost:${8787}`);

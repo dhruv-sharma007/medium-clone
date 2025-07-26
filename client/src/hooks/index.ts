@@ -9,7 +9,7 @@ import {
   getAuthor,
   getBlog,
   getBlogs,
-  getFollowersAndFollowingApi,
+  // getFollowersAndFollowingApi, 
   getMeProfile,
   searchPostApi,
 } from "../lib/api";
@@ -23,7 +23,7 @@ import type { IGetProfileResp, IPost, ITopUser, POST } from "../vite-env";
 import { usePostStore } from "../store/post";
 import { useAuthorProfileStore } from "../store/author";
 import toast from "react-hot-toast";
-import { useProfileStatStore } from "../store/ProfileState";
+// import { useProfileStatStore } from "../store/ProfileState"; 
 
 // --------- useBlogs ---------
 
