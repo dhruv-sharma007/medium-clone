@@ -1,7 +1,7 @@
-# MEDIUM CLONE 
+# Writer Social media app
 
 ## WHY
-- ### I am learning serverless backend with hono and cloudflare workers so i build this app 
+- ### I am learning full stack development backend with hono and react so i build this app 
 
 ## TECH STACK I USED FOR IT 
 - **Typescript**, **hono**, **prisma**, **postgresql**, **react**, **bun**, **neon.tech**
@@ -13,7 +13,7 @@
 - clone this repo 
 
 ```bash
-git clone https://github.com/dhruv-sharma007/medium-clone
+git clone https://github.com/dhruv-sharma007/writer
 
 ```
 
