@@ -31,7 +31,7 @@ api.interceptors.response.use(
       window.location.href = "/signin"; // change path as needed
     }
 
-    console.info(import.meta.env.VITE_BACKEND_URL);
+    // console.info(import.meta.env.VITE_BACKEND_URL);
 
 
     return Promise.reject(error);
