@@ -17,7 +17,7 @@ import type {
 import { useAuthStore } from "../store/auth";
 
 export const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}/api/v1`,
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api/v1`,
   withCredentials: true,
 });
 api.interceptors.response.use(
